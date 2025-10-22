@@ -55,21 +55,21 @@ fun App() {
                         .padding(vertical = 8.dp)) {
 
                         DrawerItem(iconText = "🌐", label = "Angleščina") {
-                            // handle subject selection
+                            // content
                         }
 
                         DrawerItem(iconText = "🗺️", label = "Geografija") {
-                            // handle subject selection
+                            // content
                         }
 
                         DrawerItem(iconText = "➕", label = "Add new subject") {
-                            // add subject flow
+                            // content
                         }
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                         DrawerItem(iconText = "⚙️", label = "Settings") {
-                            // go to settings
+                            // settings
                         }
 
                         DrawerItem(iconText = "ℹ️", label = "About us") {
@@ -105,7 +105,6 @@ fun App() {
                     }
                 }
             ) { innerPadding ->
-                // Main content area
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -156,7 +155,6 @@ private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
 private fun HomeScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         val greeting = remember { Greeting().greet() }
-        // Show a simple greeting text (image resource removed to avoid unresolved resource in common source)
         Text("Compose: $greeting", modifier = Modifier.padding(16.dp))
     }
 }
