@@ -1,6 +1,5 @@
-package com.group83.a83.view
+package com.group83.a83.view.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,17 +11,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.controller.ImageABCDController
-import com.group83.a83.model.ImageABCDModel
+import com.group83.a83.controller.ABCDController
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.AnswerModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ImageABCDView(controller: ImageABCDController, imagePainter: Painter?) {
+fun ABCDView(controller: ABCDController) {
     var selected by remember { mutableStateOf(controller.selectedIndex) }
     var confirmed by remember { mutableStateOf(controller.confirmed) }
+
     val labels = listOf("A", "B", "C", "D")
 
     Column(
@@ -31,24 +31,6 @@ fun ImageABCDView(controller: ImageABCDController, imagePainter: Painter?) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (imagePainter != null) {
-            Image(
-                painter = imagePainter,
-                contentDescription = "Question image",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 24.dp)
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("[Image here]", fontSize = 16.sp)
-            }
-        }
         Text(
             text = controller.question.question,
             fontSize = 20.sp,
@@ -97,20 +79,19 @@ fun ImageABCDView(controller: ImageABCDController, imagePainter: Painter?) {
 
 @Preview
 @Composable
-fun ImageABCDPreview() {
-    val question = ImageABCDModel(
+fun ABCDPreview() {
+    val question = ABCDModel(
         id = 1,
-        imageSrc = "",
-        question = "What animal is this?",
+        question = "What is the capital of France?",
         answers = listOf(
-            com.group83.a83.model.AnswerModel(0, "Cat"),
-            com.group83.a83.model.AnswerModel(1, "Dog"),
-            com.group83.a83.model.AnswerModel(2, "Rabbit"),
-            com.group83.a83.model.AnswerModel(3, "Horse")
+            AnswerModel(0, "Berlin"),
+            AnswerModel(1, "Madrid"),
+            AnswerModel(2, "Paris"),
+            AnswerModel(3, "Rome")
         ),
-        correctAnswers = listOf(0)
+        correctAnswers = listOf(2)
     )
-    val controller = ImageABCDController(question)
-    ImageABCDView(controller, imagePainter = null)
+    val controller = ABCDController(question)
+    ABCDView(controller)
 }
 

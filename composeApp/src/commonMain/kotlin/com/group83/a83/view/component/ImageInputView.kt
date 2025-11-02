@@ -1,4 +1,4 @@
-package com.group83.a83.view
+package com.group83.a83.view.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -14,10 +14,11 @@ import androidx.compose.ui.unit.sp
 import com.group83.a83.controller.ImageInputController
 import com.group83.a83.model.AnswerModel
 import com.group83.a83.model.ImageInputModel
+import com.skydoves.landscapist.coil3.CoilImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ImageInputView(controller: ImageInputController, imagePainter: Painter?) {
+fun ImageInputView(controller: ImageInputController) {
     var input by remember { mutableStateOf(controller.input) }
     var confirmed by remember { mutableStateOf(controller.confirmed) }
     var isCorrect by remember { mutableStateOf(controller.isCorrect) }
@@ -28,24 +29,12 @@ fun ImageInputView(controller: ImageInputController, imagePainter: Painter?) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (imagePainter != null) {
-            Image(
-                painter = imagePainter,
-                contentDescription = "Guess the image",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 24.dp)
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("[Image here]", fontSize = 16.sp)
-            }
-        }
+        CoilImage(
+            imageModel = { controller.question.imageSrc },
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 24.dp),
+        )
         OutlinedTextField(
             value = input,
             onValueChange = {
@@ -90,6 +79,6 @@ fun ImageInputPreview() {
         )
     )
     val controller = ImageInputController(question)
-    ImageInputView(controller, imagePainter = null)
+    ImageInputView(controller)
 }
 

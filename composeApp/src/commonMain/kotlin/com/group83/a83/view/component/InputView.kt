@@ -1,4 +1,4 @@
-package com.group83.a83.view
+package com.group83.a83.view.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group83.a83.controller.InputController
+import com.group83.a83.model.AnswerModel
 import com.group83.a83.model.InputModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -68,9 +69,9 @@ fun InputPreview() {
         id = 1,
         question = "Name a primary color:",
         answers = listOf(
-            com.group83.a83.model.AnswerModel(0, "red"),
-            com.group83.a83.model.AnswerModel(1, "blue"),
-            com.group83.a83.model.AnswerModel(2, "yellow")
+            AnswerModel(0, "red"),
+            AnswerModel(1, "blue"),
+            AnswerModel(2, "yellow")
         )
     )
     val controller = InputController(question)

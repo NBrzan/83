@@ -1,4 +1,4 @@
-package com.group83.a83.view
+package com.group83.a83.view.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState

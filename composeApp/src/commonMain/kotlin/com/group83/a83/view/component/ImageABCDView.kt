@@ -1,4 +1,4 @@
-package com.group83.a83.view
+package com.group83.a83.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,15 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.controller.ABCDController
-import com.group83.a83.model.ABCDModel
+import com.group83.a83.controller.ImageABCDController
+import com.group83.a83.model.AnswerModel
+import com.group83.a83.model.ImageABCDModel
+import com.skydoves.landscapist.coil3.CoilImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ABCDView(controller: ABCDController) {
+fun ImageABCDView(controller: ImageABCDController) {
     var selected by remember { mutableStateOf(controller.selectedIndex) }
     var confirmed by remember { mutableStateOf(controller.confirmed) }
-
     val labels = listOf("A", "B", "C", "D")
 
     Column(
@@ -30,6 +31,12 @@ fun ABCDView(controller: ABCDController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        CoilImage(
+            imageModel = { controller.question.imageSrc },
+            modifier = Modifier
+                .size(200.dp)
+                .padding(bottom = 24.dp),
+        )
         Text(
             text = controller.question.question,
             fontSize = 20.sp,
@@ -78,19 +85,20 @@ fun ABCDView(controller: ABCDController) {
 
 @Preview
 @Composable
-fun ABCDPreview() {
-    val question = ABCDModel(
+fun ImageABCDPreview() {
+    val question = ImageABCDModel(
         id = 1,
-        question = "What is the capital of France?",
+        imageSrc = "",
+        question = "What animal is this?",
         answers = listOf(
-            com.group83.a83.model.AnswerModel(0, "Berlin"),
-            com.group83.a83.model.AnswerModel(1, "Madrid"),
-            com.group83.a83.model.AnswerModel(2, "Paris"),
-            com.group83.a83.model.AnswerModel(3, "Rome")
+            AnswerModel(0, "Cat"),
+            AnswerModel(1, "Dog"),
+            AnswerModel(2, "Rabbit"),
+            AnswerModel(3, "Horse")
         ),
-        correctAnswers = listOf(2)
+        correctAnswers = listOf(0)
     )
-    val controller = ABCDController(question)
-    ABCDView(controller)
+    val controller = ImageABCDController(question)
+    ImageABCDView(controller)
 }
 
