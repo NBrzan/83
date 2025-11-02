@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -29,6 +30,10 @@ import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.StatisticsScreenView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.Subject
+import com.group83.a83.view.component.QuestionModel
+import com.group83.a83.view.component.MultipleChoiceForm
+import com.group83.a83.view.component.InputAnswerForm
+import com.group83.a83.view.component.FlashcardForm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,7 +45,9 @@ fun NavAndSideBarView(
     scope: CoroutineScope,
     uiState: UiState,
     onUiStateChange: (UiState) -> Unit,
-    onAddSubject: (String, String) -> Unit
+    onAddSubject: (String, String) -> Unit,
+    createdQuestions: List<QuestionModel>,
+    onAddQuestion: (QuestionModel) -> Unit
 ) {
     // Use uiState.currentSelectedSubject as the source of truth for which subject is selected.
 
@@ -136,8 +143,21 @@ fun NavAndSideBarView(
 
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView(uiState = uiState)
-                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject)
+                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
                     ScreenEnum.Statistics -> StatisticsScreenView(uiState = uiState)
+
+                    ScreenEnum.MultipleForm -> {
+                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.InputForm -> {
+                        InputAnswerForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.FlashcardForm -> {
+                        FlashcardForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
                 }
             }
         }

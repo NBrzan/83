@@ -26,29 +26,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group83.a83.view.component.CreateQuestionView
-import com.group83.a83.view.component.MultipleChoiceForm
-import com.group83.a83.view.component.InputAnswerForm
-import com.group83.a83.view.component.FlashcardForm
 import com.group83.a83.view.component.QuestionModel
+import com.group83.a83.view.ScreenEnum
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-// Top-level enum (must not be declared inside a function)
-enum class FormType { None, Multiple, Input, Flashcard }
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
 fun CreatorScreenView(
     uiState: UiState = UiState(),
-    onAddSubject: (String, String) -> Unit = { _, _ -> }
+    onAddSubject: (String, String) -> Unit = { _, _ -> },
+    createdQuestions: List<QuestionModel> = emptyList(),
+    onOpenForm: (ScreenEnum) -> Unit = {}
 ) {
     var newSubject by remember { mutableStateOf("") }
     var newEmoji by remember { mutableStateOf("📚") }
 
     val emojiPicks = listOf("📚", "🌐", "🧪", "🧮", "🔬", "🎨")
-
-    // Track which form is currently open and store created questions locally
-    var openForm by remember { mutableStateOf(FormType.None) }
-    var createdQuestions by remember { mutableStateOf(listOf<QuestionModel>()) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +59,7 @@ fun CreatorScreenView(
             )
         } else {
             Text(
-                "Ustvari karte!",
+                "Ustvari Q/A karte!",
                 modifier = Modifier
                     .fillMaxWidth(),
                 fontSize = 24.sp,
@@ -80,46 +73,17 @@ fun CreatorScreenView(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // If a form is open, show it; otherwise show the list of question types
-            when (openForm) {
-                FormType.None -> {
-                    Row(modifier = Modifier
-                        .fillMaxWidth(),
-                        /*horizontalAlignment = Alignment.CenterHorizontally*/
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        CreateQuestionView("Multi Q/A", "/path", onClick = { openForm = FormType.Multiple })
-                        CreateQuestionView("Input Q/A", "/path", onClick = { openForm = FormType.Input })
-                        CreateQuestionView("Flashcard Q/A", "/path", onClick = { openForm = FormType.Flashcard })
-                    }
-                }
-                FormType.Multiple -> {
-                    MultipleChoiceForm(onAdd = { q ->
-                        createdQuestions = createdQuestions + q
-                        openForm = FormType.None
-                    })
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
-                }
-                FormType.Input -> {
-                    InputAnswerForm(onAdd = { q ->
-                        createdQuestions = createdQuestions + q
-                        openForm = FormType.None
-                    })
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
-                }
-                FormType.Flashcard -> {
-                    FlashcardForm(onAdd = { q ->
-                        createdQuestions = createdQuestions + q
-                        openForm = FormType.None
-                    })
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
-                }
+            // Show the list of question type cards; clicking opens a separate screen via onOpenForm
+            Row(modifier = Modifier
+                .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CreateQuestionView("Multi", "/path", onClick = { onOpenForm(ScreenEnum.MultipleForm) })
+                CreateQuestionView("Input", "/path", onClick = { onOpenForm(ScreenEnum.InputForm) })
+                CreateQuestionView("Flashcard", "/path", onClick = { onOpenForm(ScreenEnum.FlashcardForm) })
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(90.dp))
 
             Text(
                 "Ustvari nove predmete:",
@@ -182,7 +146,7 @@ fun CreatorScreenView(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // show created questions summary
+            // show created questions summary (comes from app-level state)
             if (createdQuestions.isNotEmpty()) {
                 Text("Created: ${'$'}{createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
                 createdQuestions.forEach { q ->
