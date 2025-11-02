@@ -19,11 +19,11 @@ fun CreateQuestionView(
     imagePath: String
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text, modifier = Modifier.padding(16.dp).fillMaxWidth())
+        Text(text, modifier = Modifier.padding(16.dp))
         Box(
             modifier = Modifier
-                .padding(8.dp)
-                .size(120.dp)
+                .padding(2.dp)
+                .size(100.dp)
                 .border(width = 1.dp, color = Color.LightGray),
             contentAlignment = Alignment.Center
         ) {

@@ -20,11 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.view.component.ABCDquestionGraphicView
+import com.group83.a83.view.component.CreateQuestionView
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview(name = "App preview", showBackground = true)
@@ -36,15 +37,14 @@ fun CreatorScreenView(
     var newSubject by remember { mutableStateOf("") }
     var newEmoji by remember { mutableStateOf("📚") }
 
-    // simple quick-pick emojis
-    val emojiPicks = listOf("📚", "🌐", "🗺️", "🧪", "🧮", "🔬", "🎨")
+    val emojiPicks = listOf("📚", "🌐", "🧪", "🧮", "🔬", "🎨")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(1.dp)
     ) {
         // Use uiState so the parameter is not unused and show centered info
         if (uiState.isLoading) {
@@ -63,14 +63,20 @@ fun CreatorScreenView(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Predmet: ${'$'}{uiState.currentSelectedSubject}",
+                "Predmet: ${uiState.currentSelectedSubject}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
 
-            ABCDquestionGraphicView()
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                CreateQuestionView("Multi Q/A", "/path")
+                CreateQuestionView("Input Q/A", "/path")
+            }
+            CreateQuestionView("Flashcard Q/A", "/path")
+
+            Spacer(modifier = Modifier.height(60.dp))
 
             Text(
                 "Ustvari nove predmete:",
@@ -92,16 +98,18 @@ fun CreatorScreenView(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Emoji input + quick picks
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
                     value = newEmoji,
-                    onValueChange = { newEmoji = it.take(2) }, // limit a bit
+                    onValueChange = { newEmoji = it.take(2) },
                     label = { Text("Emoji") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    textStyle = TextStyle(
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
                 Spacer(modifier = Modifier.size(8.dp))
-                // quick picks
                 Row {
                     emojiPicks.forEach { e ->
                         IconButton(onClick = { newEmoji = e }, modifier = Modifier.size(40.dp)) {
