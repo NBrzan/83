@@ -16,15 +16,19 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.StatisticsScreenView
+import com.group83.a83.view.screens.UiState
+import com.group83.a83.view.screens.Subject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -33,8 +37,13 @@ fun NavAndSideBarView(
     drawerState: androidx.compose.material3.DrawerState,
     selected: ScreenEnum,
     onSelectedChange: (ScreenEnum) -> Unit,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    uiState: UiState,
+    onUiStateChange: (UiState) -> Unit,
+    onAddSubject: (String, String) -> Unit
 ) {
+    // Use uiState.currentSelectedSubject as the source of truth for which subject is selected.
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -44,26 +53,36 @@ fun NavAndSideBarView(
                     .safeContentPadding()
                     .padding(vertical = 8.dp)) {
 
-                    DrawerItem(iconText = "🌐", label = "Angleščina") {
-                        // content
-                    }
-
-                    DrawerItem(iconText = "🗺️", label = "Geografija") {
-                        // content
-                    }
-
-                    DrawerItem(iconText = "➕", label = "Add new subject") {
-                        // content
+                    // Render subjects dynamically from uiState.subjects
+                    uiState.subjects.forEach { subject: Subject ->
+                        DrawerItem(
+                            iconText = subject.emoji,
+                            label = subject.name,
+                            isSelected = uiState.currentSelectedSubject == subject.name
+                        ) {
+                            onUiStateChange(uiState.copy(currentSelectedSubject = subject.name))
+                            scope.launch { drawerState.close() }
+                        }
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    DrawerItem(iconText = "⚙️", label = "Settings") {
-                        // settings
+                    // Navigate to Creator screen to add a new subject
+                    DrawerItem(iconText = "➕", label = "Add new subject", isSelected = false) {
+                        onSelectedChange(ScreenEnum.Creator)
+                        scope.launch { drawerState.close() }
                     }
 
-                    DrawerItem(iconText = "ℹ️", label = "About us") {
-                        // about
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                    DrawerItem(iconText = "⚙️", label = "Settings", isSelected = false) {
+                        // settings — non-selectable
+                        scope.launch { drawerState.close() }
+                    }
+
+                    DrawerItem(iconText = "ℹ️", label = "About us", isSelected = false) {
+                        // about — non-selectable
+                        scope.launch { drawerState.close() }
                     }
                 }
             }
@@ -116,9 +135,9 @@ fun NavAndSideBarView(
                 }
 
                 when (selected) {
-                    ScreenEnum.Home -> HomeScreenView()
-                    ScreenEnum.Creator -> CreatorScreenView()
-                    ScreenEnum.Statistics -> StatisticsScreenView()
+                    ScreenEnum.Home -> HomeScreenView(uiState = uiState)
+                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject)
+                    ScreenEnum.Statistics -> StatisticsScreenView(uiState = uiState)
                 }
             }
         }
@@ -126,7 +145,7 @@ fun NavAndSideBarView(
 }
 
 @Composable
-private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
+private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = false, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -136,6 +155,10 @@ private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
     ) {
         Text(iconText, fontSize = 20.sp)
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(12.dp))
-        Text(label)
+        Text(
+            text = label,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        )
     }
 }
