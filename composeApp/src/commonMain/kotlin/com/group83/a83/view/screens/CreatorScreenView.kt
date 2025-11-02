@@ -26,7 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group83.a83.view.component.CreateQuestionView
+import com.group83.a83.view.component.MultipleChoiceForm
+import com.group83.a83.view.component.InputAnswerForm
+import com.group83.a83.view.component.FlashcardForm
+import com.group83.a83.view.component.QuestionModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+// Top-level enum (must not be declared inside a function)
+enum class FormType { None, Multiple, Input, Flashcard }
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
@@ -38,6 +45,10 @@ fun CreatorScreenView(
     var newEmoji by remember { mutableStateOf("📚") }
 
     val emojiPicks = listOf("📚", "🌐", "🧪", "🧮", "🔬", "🎨")
+
+    // Track which form is currently open and store created questions locally
+    var openForm by remember { mutableStateOf(FormType.None) }
+    var createdQuestions by remember { mutableStateOf(listOf<QuestionModel>()) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,20 +74,48 @@ fun CreatorScreenView(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Predmet: ${uiState.currentSelectedSubject}",
+                "Predmet: ${'$'}{uiState.currentSelectedSubject}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                CreateQuestionView("Multi Q/A", "/path")
-                CreateQuestionView("Input Q/A", "/path")
+            // If a form is open, show it; otherwise show the list of question types
+            when (openForm) {
+                FormType.None -> {
+                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        CreateQuestionView("Multi Q/A", "/path", onClick = { openForm = FormType.Multiple })
+                        CreateQuestionView("Input Q/A", "/path", onClick = { openForm = FormType.Input })
+                        CreateQuestionView("Flashcard Q/A", "/path", onClick = { openForm = FormType.Flashcard })
+                    }
+                }
+                FormType.Multiple -> {
+                    MultipleChoiceForm(onAdd = { q ->
+                        createdQuestions = createdQuestions + q
+                        openForm = FormType.None
+                    })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
+                }
+                FormType.Input -> {
+                    InputAnswerForm(onAdd = { q ->
+                        createdQuestions = createdQuestions + q
+                        openForm = FormType.None
+                    })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
+                }
+                FormType.Flashcard -> {
+                    FlashcardForm(onAdd = { q ->
+                        createdQuestions = createdQuestions + q
+                        openForm = FormType.None
+                    })
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { openForm = FormType.None }) { Text("Back") }
+                }
             }
-            CreateQuestionView("Flashcard Q/A", "/path")
 
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 "Ustvari nove predmete:",
@@ -103,7 +142,7 @@ fun CreatorScreenView(
                     value = newEmoji,
                     onValueChange = { newEmoji = it.take(2) },
                     label = { Text("Emoji") },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(0.75f),
                     textStyle = TextStyle(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
@@ -135,6 +174,20 @@ fun CreatorScreenView(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Dodaj predmet")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // show created questions summary
+            if (createdQuestions.isNotEmpty()) {
+                Text("Created: ${'$'}{createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
+                createdQuestions.forEach { q ->
+                    when (q) {
+                        is QuestionModel.MultipleChoice -> Text("MC: ${'$'}{q.question}")
+                        is QuestionModel.InputAnswer -> Text("Input: ${'$'}{q.question}")
+                        is QuestionModel.Flashcard -> Text("Flash: ${'$'}{q.question}")
+                    }
+                }
             }
         }
     }
