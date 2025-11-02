@@ -68,7 +68,7 @@ fun CreatorScreenView(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 CreateQuestionView("Multi Q/A", "/path")
@@ -76,7 +76,7 @@ fun CreatorScreenView(
             }
             CreateQuestionView("Flashcard Q/A", "/path")
 
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(70.dp))
 
             Text(
                 "Ustvari nove predmete:",
