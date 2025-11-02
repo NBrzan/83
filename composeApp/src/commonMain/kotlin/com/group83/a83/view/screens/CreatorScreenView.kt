@@ -25,8 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group83.a83.model.FlashcardModel
+import com.group83.a83.model.GameQuestion
+import com.group83.a83.model.InputModel
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.ImageABCDModel
+import com.group83.a83.model.ImageInputModel
 import com.group83.a83.view.component.CreateQuestionView
-import com.group83.a83.view.component.QuestionModel
 import com.group83.a83.view.ScreenEnum
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -35,7 +40,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun CreatorScreenView(
     uiState: UiState = UiState(),
     onAddSubject: (String, String) -> Unit = { _, _ -> },
-    createdQuestions: List<QuestionModel> = emptyList(),
+    createdQuestions: List<GameQuestion> = emptyList(),
     onOpenForm: (ScreenEnum) -> Unit = {}
 ) {
     var newSubject by remember { mutableStateOf("") }
@@ -145,12 +150,14 @@ fun CreatorScreenView(
             Spacer(modifier = Modifier.height(12.dp))
 
             if (createdQuestions.isNotEmpty()) {
-                Text("Created: ${'$'}{createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
+                Text("Created: ${createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
                 createdQuestions.forEach { q ->
                     when (q) {
-                        is QuestionModel.MultipleChoice -> Text("MC: ${'$'}{q.question}")
-                        is QuestionModel.InputAnswer -> Text("Input: ${'$'}{q.question}")
-                        is QuestionModel.Flashcard -> Text("Flash: ${'$'}{q.question}")
+                        is ABCDModel -> Text("MC: ${q.question}")
+                        is InputModel -> Text("Input: ${q.question}")
+                        is FlashcardModel -> Text("Flash: ${q.front}")
+                        is ImageABCDModel -> Text("Image MC: ${q.question}")
+                        is ImageInputModel -> Text("Image Input: ${q.question}")
                     }
                 }
             }

@@ -14,7 +14,7 @@ import com.group83.a83.view.NavAndSideBarView
 import com.group83.a83.view.ScreenEnum
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.Subject
-import com.group83.a83.view.component.QuestionModel
+import com.group83.a83.model.GameQuestion
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
@@ -24,10 +24,13 @@ fun App() {
         var selected by remember { mutableStateOf(ScreenEnum.Home) }
         val scope = rememberCoroutineScope()
 
+        // Remember UiState at the top level so selection persists across the UI
         var uiState by remember { mutableStateOf(UiState()) }
 
-        var createdQuestions by remember { mutableStateOf(listOf<QuestionModel>()) }
+        // Remember created questions at the app level so separate form screens can add to it
+        var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
 
+        // Handler to add a subject if it doesn't already exist
         val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
             val trimmed = newSubject.trim()
             val chosenEmoji = if (emoji.isBlank()) "📚" else emoji
@@ -43,11 +46,13 @@ fun App() {
             }
         }
 
-        val onAddQuestion: (QuestionModel) -> Unit = { q ->
+        val onAddQuestion: (GameQuestion) -> Unit = { q ->
             createdQuestions = createdQuestions + q
+            // After adding, navigate back to Creator screen to show list
             selected = ScreenEnum.Creator
         }
 
+        // Call NavAndSideBarView with positional arguments matching its signature
         NavAndSideBarView(
             drawerState,
             selected,

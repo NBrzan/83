@@ -17,10 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlin.random.Random
+import com.group83.a83.model.InputModel
+import com.group83.a83.model.AnswerModel
 
 @Composable
 fun InputAnswerForm(
-    onAdd: (QuestionModel.InputAnswer) -> Unit = {}
+    onAdd: (InputModel) -> Unit = {}
 ) {
     var question by remember { mutableStateOf("") }
     var newAnswer by remember { mutableStateOf("") }
@@ -52,7 +55,9 @@ fun InputAnswerForm(
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = {
             if (question.isNotBlank() && answers.isNotEmpty()) {
-                onAdd(QuestionModel.InputAnswer(question.trim(), answers))
+                val id = Random.nextInt(1, Int.MAX_VALUE)
+                val answerModels = answers.mapIndexed { i, a -> AnswerModel(i, a) }
+                onAdd(InputModel(id = id, question = question.trim(), answers = answerModels))
                 question = ""
                 answers = emptyList()
             }

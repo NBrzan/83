@@ -25,12 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group83.a83.model.GameQuestion
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.StatisticsScreenView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.Subject
-import com.group83.a83.view.component.QuestionModel
 import com.group83.a83.view.component.MultipleChoiceForm
 import com.group83.a83.view.component.InputAnswerForm
 import com.group83.a83.view.component.FlashcardForm
@@ -46,8 +46,8 @@ fun NavAndSideBarView(
     uiState: UiState,
     onUiStateChange: (UiState) -> Unit,
     onAddSubject: (String, String) -> Unit,
-    createdQuestions: List<QuestionModel>,
-    onAddQuestion: (QuestionModel) -> Unit
+    createdQuestions: List<GameQuestion>,
+    onAddQuestion: (GameQuestion) -> Unit
 ) {
     // Use uiState.currentSelectedSubject as the source of truth for which subject is selected.
 

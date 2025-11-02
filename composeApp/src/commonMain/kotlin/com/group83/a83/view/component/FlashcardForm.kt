@@ -15,10 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlin.random.Random
+import com.group83.a83.model.FlashcardModel
 
 @Composable
 fun FlashcardForm(
-    onAdd: (QuestionModel.Flashcard) -> Unit = {}
+    onAdd: (FlashcardModel) -> Unit = {}
 ) {
     var question by remember { mutableStateOf("") }
     var answer by remember { mutableStateOf("") }
@@ -31,7 +33,8 @@ fun FlashcardForm(
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = {
             if (question.isNotBlank() && answer.isNotBlank()) {
-                onAdd(QuestionModel.Flashcard(question.trim(), answer.trim()))
+                val id = Random.nextInt(1, Int.MAX_VALUE)
+                onAdd(FlashcardModel(id = id, front = question.trim(), back = answer.trim()))
                 question = ""
                 answer = ""
             }

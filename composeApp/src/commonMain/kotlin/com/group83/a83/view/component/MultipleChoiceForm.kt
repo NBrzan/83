@@ -18,10 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlin.random.Random
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.AnswerModel
 
 @Composable
 fun MultipleChoiceForm(
-    onAdd: (QuestionModel.MultipleChoice) -> Unit = {}
+    onAdd: (ABCDModel) -> Unit = {}
 ) {
     var question by remember { mutableStateOf("") }
     var answers by remember { mutableStateOf(listOf("", "", "", "")) }
@@ -37,6 +40,7 @@ fun MultipleChoiceForm(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // four answer inputs with checkbox
         answers.forEachIndexed { index, answer ->
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                 OutlinedTextField(
@@ -56,11 +60,16 @@ fun MultipleChoiceForm(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(onClick = {
+            // Validate: at least one non-empty answer and at least one correct among non-empty
             val nonEmpty = answers.mapIndexed { i, a -> i to a.trim() }.filter { it.second.isNotEmpty() }
             val hasCorrect = nonEmpty.any { (i, _) -> correct[i] }
             if (question.isNotBlank() && nonEmpty.isNotEmpty() && hasCorrect) {
-                onAdd(QuestionModel.MultipleChoice(question.trim(), answers.map { it.trim() }, correct))
-
+                // build AnswerModel list
+                val answerModels = answers.mapIndexed { i, a -> AnswerModel(i, a.trim()) }
+                val id = Random.nextInt(1, Int.MAX_VALUE)
+                val model = ABCDModel(id = id, question = question.trim(), answers = answerModels, correctAnswers = correct.mapIndexedNotNull { i, c -> if (c && answers[i].isNotBlank()) i else null })
+                onAdd(model)
+                // reset
                 question = ""
                 answers = listOf("", "", "", "")
                 correct = listOf(false, false, false, false)
