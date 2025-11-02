@@ -12,6 +12,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // Initialize and install bundled JSON defaults into the app files directory
+        ResourceInstaller.init(this)
+        ResourceInstaller.installDefaultsIfNeeded()
+
         setContent {
             App()
         }
