@@ -37,7 +37,6 @@ fun MultipleChoiceForm(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // four answer inputs with checkbox
         answers.forEachIndexed { index, answer ->
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                 OutlinedTextField(
@@ -57,12 +56,11 @@ fun MultipleChoiceForm(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(onClick = {
-            // Validate: at least one non-empty answer and at least one correct among non-empty
             val nonEmpty = answers.mapIndexed { i, a -> i to a.trim() }.filter { it.second.isNotEmpty() }
             val hasCorrect = nonEmpty.any { (i, _) -> correct[i] }
             if (question.isNotBlank() && nonEmpty.isNotEmpty() && hasCorrect) {
                 onAdd(QuestionModel.MultipleChoice(question.trim(), answers.map { it.trim() }, correct))
-                // reset
+
                 question = ""
                 answers = listOf("", "", "", "")
                 correct = listOf(false, false, false, false)

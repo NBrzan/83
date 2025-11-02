@@ -60,7 +60,6 @@ fun NavAndSideBarView(
                     .safeContentPadding()
                     .padding(vertical = 8.dp)) {
 
-                    // Render subjects dynamically from uiState.subjects
                     uiState.subjects.forEach { subject: Subject ->
                         DrawerItem(
                             iconText = subject.emoji,
@@ -74,7 +73,6 @@ fun NavAndSideBarView(
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    // Navigate to Creator screen to add a new subject
                     DrawerItem(iconText = "➕", label = "Add new subject", isSelected = false) {
                         onSelectedChange(ScreenEnum.Creator)
                         scope.launch { drawerState.close() }
@@ -83,12 +81,10 @@ fun NavAndSideBarView(
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                     DrawerItem(iconText = "⚙️", label = "Settings", isSelected = false) {
-                        // settings — non-selectable
                         scope.launch { drawerState.close() }
                     }
 
                     DrawerItem(iconText = "ℹ️", label = "About us", isSelected = false) {
-                        // about — non-selectable
                         scope.launch { drawerState.close() }
                     }
                 }
@@ -129,10 +125,8 @@ fun NavAndSideBarView(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
-                        // toggle drawer using coroutine scope
                         scope.launch {
                             if (drawerState.isClosed) drawerState.open() else drawerState.close()
                         }

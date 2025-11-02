@@ -1,6 +1,5 @@
 package com.group83.a83.view.component
 
-// Simple in-memory models for created questions. These are local to the UI layer for now.
 sealed class QuestionModel {
     data class MultipleChoice(
         val question: String,

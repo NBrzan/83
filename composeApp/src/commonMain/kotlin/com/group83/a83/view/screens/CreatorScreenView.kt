@@ -50,7 +50,6 @@ fun CreatorScreenView(
             .fillMaxSize()
             .padding(1.dp)
     ) {
-        // Use uiState so the parameter is not unused and show centered info
         if (uiState.isLoading) {
             Text(
                 "Loading...",
@@ -73,7 +72,6 @@ fun CreatorScreenView(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Show the list of question type cards; clicking opens a separate screen via onOpenForm
             Row(modifier = Modifier
                 .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -146,7 +144,6 @@ fun CreatorScreenView(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // show created questions summary (comes from app-level state)
             if (createdQuestions.isNotEmpty()) {
                 Text("Created: ${'$'}{createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
                 createdQuestions.forEach { q ->

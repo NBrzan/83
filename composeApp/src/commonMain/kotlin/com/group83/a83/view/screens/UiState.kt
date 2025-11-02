@@ -1,6 +1,5 @@
 package com.group83.a83.view.screens
 
-// Simple subject model that carries a display name and an emoji/icon
 data class Subject(
     val name: String,
     val emoji: String

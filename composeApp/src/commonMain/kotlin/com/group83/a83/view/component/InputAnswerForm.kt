@@ -18,8 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.group83.a83.view.component.QuestionModel
-
 @Composable
 fun InputAnswerForm(
     onAdd: (QuestionModel.InputAnswer) -> Unit = {}
