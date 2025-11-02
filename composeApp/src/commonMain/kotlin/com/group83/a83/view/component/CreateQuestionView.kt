@@ -23,21 +23,18 @@ fun CreateQuestionView(
     onClick: () -> Unit = {}
 ) {
     Card(modifier = modifier
-        .fillMaxWidth()
         .padding(8.dp)
         .clickable { onClick() }
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(8.dp)) {
-            Text(text, modifier = Modifier.padding(4.dp))
-            Box(
-                modifier = Modifier
-                    .padding(2.dp)
-                    .size(100.dp)
-                    .border(width = 1.dp, color = Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(imagePath)
-            }
+        Text(text, modifier = Modifier.padding(4.dp))
+        Box(
+            modifier = Modifier
+                .padding(2.dp)
+                .size(100.dp)
+                .border(width = 1.dp, color = Color.LightGray),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(imagePath)
         }
     }
 }

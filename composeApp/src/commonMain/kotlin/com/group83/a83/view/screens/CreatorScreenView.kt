@@ -74,7 +74,7 @@ fun CreatorScreenView(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Predmet: ${'$'}{uiState.currentSelectedSubject}",
+                "Predmet: ${uiState.currentSelectedSubject}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -83,7 +83,11 @@ fun CreatorScreenView(
             // If a form is open, show it; otherwise show the list of question types
             when (openForm) {
                 FormType.None -> {
-                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth(),
+                        /*horizontalAlignment = Alignment.CenterHorizontally*/
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         CreateQuestionView("Multi Q/A", "/path", onClick = { openForm = FormType.Multiple })
                         CreateQuestionView("Input Q/A", "/path", onClick = { openForm = FormType.Input })
                         CreateQuestionView("Flashcard Q/A", "/path", onClick = { openForm = FormType.Flashcard })
@@ -142,7 +146,7 @@ fun CreatorScreenView(
                     value = newEmoji,
                     onValueChange = { newEmoji = it.take(2) },
                     label = { Text("Emoji") },
-                    modifier = Modifier.fillMaxWidth(0.75f),
+                    modifier = Modifier.weight(1f),
                     textStyle = TextStyle(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
