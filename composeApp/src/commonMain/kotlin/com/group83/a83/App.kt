@@ -34,10 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class Screen { Home, Creator, Statistics }
 
 @OptIn(ExperimentalFoundationApi::class)
+@Preview(name = "App preview", showBackground = true)
 @Composable
 fun App() {
     MaterialTheme {
@@ -126,7 +128,10 @@ fun App() {
                     }
 
                     when (selected) {
-                        Screen.Home -> HomeScreen()
+                        Screen.Home -> HomeScreen(
+                            onOpenDrawer = { scope.launch { drawerState.open() } },
+                            onNavigateToCreator = { selected = Screen.Creator }
+                        )
                         Screen.Creator -> CreatorScreen()
                         Screen.Statistics -> StatisticsScreen()
                     }
@@ -148,14 +153,6 @@ private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
         Text(iconText, fontSize = 20.sp)
         Spacer(modifier = Modifier.size(12.dp))
         Text(label)
-    }
-}
-
-@Composable
-private fun HomeScreen() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        val greeting = remember { Greeting().greet() }
-        Text("Compose: $greeting", modifier = Modifier.padding(16.dp))
     }
 }
 
