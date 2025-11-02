@@ -29,11 +29,6 @@ kotlin {
     
     jvm()
     
-    js {
-        browser()
-        binaries.executable()
-    }
-    
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -54,6 +49,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation("com.github.skydoves:landscapist-coil3:2.6.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
