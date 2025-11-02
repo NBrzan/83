@@ -17,10 +17,10 @@ class ImageInputController(val question: ImageInputModel) {
         }
     }
 
-    fun confirm(correctAnswers: List<AnswerModel>) {
+    fun confirm() {
         if (!confirmed) {
             val normalized = input.trim().lowercase()
-            isCorrect = correctAnswers.any { it.answer.trim().lowercase() == normalized }
+            isCorrect = question.answers.any { it.answer.trim().lowercase() == normalized }
             confirmed = true
         }
     }

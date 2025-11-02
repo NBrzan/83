@@ -3,6 +3,9 @@ package com.group83.a83.view.component
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,39 +39,67 @@ fun FlashcardView(controller: FlashcardController) {
 
     val rotation by animateFloatAsState(
         targetValue = if (flipped) 0f else 180f,
-        animationSpec = tween(durationMillis = 400)
+        animationSpec = tween(durationMillis = 500)
     )
 
     val isFrontVisible = rotation <= 90f
+
+    val cardColor = if (flipped) Color(0xFFFFF2A7) else Color(0xFFA7E6FF)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1.6f)
+            .aspectRatio(1.4f)
             .graphicsLayer {
                 rotationY = rotation
-                cameraDistance = 8 * density
+                cameraDistance = 12 * density
             }
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFFF6F6F6))
+            .clip(RoundedCornerShape(30.dp))
+            .background(cardColor)
             .clickable {
                 controller.flip()
                 flipped = controller.isFront
             }
-            .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
+            .border(
+                width = 4.dp,
+                color = Color(0xFF444444),
+                shape = RoundedCornerShape(30.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {
-        AnimatedContent(isFrontVisible) { front ->
-            Text(
-                text = if (front) controller.question.front else controller.question.back,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+        AnimatedContent(
+            targetState = isFrontVisible,
+            transitionSpec = {
+                fadeIn() togetherWith fadeOut()
+            },
+            label = "FlipCardContent"
+        ) { front ->
+            if (front) {
+                FlashcardText(controller.question.front)
+            } else {
+                FlashcardText(
+                    text = controller.question.back,
+                    flipped = true
+                )
+            }
         }
     }
 }
+
+@Composable
+private fun FlashcardText(text: String, flipped: Boolean = false) {
+    Text(
+        text = text,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .padding(24.dp)
+            .graphicsLayer { if (flipped) rotationY = 180f },
+        fontSize = 36.sp,
+        fontWeight = FontWeight.ExtraBold,
+        color = Color(0xFF333333)
+    )
+}
+
 
 @Preview(showBackground = true)
 @Composable
