@@ -1,0 +1,85 @@
+{
+  "flashCard": [
+    {
+      "id": 0,
+      "front": "",
+      "back": ""
+    }
+  ],
+  "abcd": [
+    {
+      "id": 0,
+      "question": "",
+      "answers": [
+        {
+          "id": 0,
+          "answer": ""
+        },
+        {
+          "id": 1,
+          "answer": ""
+        },
+        {
+          "id": 2,
+          "answer": ""
+        },
+        {
+          "id": 3,
+          "answer": ""
+        }
+      ],
+      "correctAnswers": []
+    }
+  ],
+  "input": [
+    {
+      "id": 0,
+      "question": "",
+      "answers": [
+        {
+          "id": 0,
+          "answer": ""
+        }
+      ]
+    }
+  ],
+  "abcdImage": [
+    {
+      "id": 0,
+      "imageSrc": "",
+      "question": "",
+      "answers": [
+        {
+          "id": 0,
+          "answer": ""
+        },
+        {
+          "id": 1,
+          "answer": ""
+        },
+        {
+          "id": 2,
+          "answer": ""
+        },
+        {
+          "id": 3,
+          "answer": ""
+        }
+      ],
+      "correctAnswers": []
+    }
+  ],
+  "inputImage": [
+    {
+      "id": 0,
+      "imageSrc": "",
+      "question": "",
+      "answers": [
+        {
+          "id": 0,
+          "answer": ""
+        }
+      ]
+    }
+  ]
+}
