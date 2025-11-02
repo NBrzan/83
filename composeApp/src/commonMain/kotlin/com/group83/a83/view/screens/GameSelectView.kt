@@ -1,0 +1,86 @@
+package com.group83.a83.view.screens
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.group83.a83.view.component.SimpleGameDisplay
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Preview(name = "App preview", showBackground = true)
+@Composable
+fun GameSelectView(
+    uiState: UiState = UiState()
+) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(1.dp)
+    ) {
+        if (uiState.isLoading) {
+            Text(
+                "Loading...",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            Text(
+                "Izberi igro",
+                modifier = Modifier
+                    .fillMaxWidth(),
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                "Predmet: eng",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                SimpleGameDisplay(
+                    "Multiple choices",
+                    "https://cdn4.iconfinder.com/data/icons/top-search-7/128/_list_bullets_points_checklist_choose--512.png",
+                    modifier = Modifier.weight(1f)
+                )
+                SimpleGameDisplay(
+                    "Input answer",
+                    "https://cdn1.iconfinder.com/data/icons/radix/15/input-512.png",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            SimpleGameDisplay("Image multiple choices", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
+            SimpleGameDisplay("Image Input answer", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
+
+            SimpleGameDisplay("Flashcard Q/A", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4")
+
+            Spacer(modifier = Modifier.height(70.dp))
+
+
+
+
+        }
+    }
+}
