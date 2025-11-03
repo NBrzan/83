@@ -1,0 +1,7 @@
+selectAll:
+SELECT *
+FROM FlashCard;
+
+ insert:
+ INSERT OR REPLACE INTO FlashCard(id, front, back)
+ VALUES(?,?, ?);

@@ -8,8 +8,20 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    id("app.cash.sqldelight") version "2.1.0"
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.group83.a83.sqldelight")
+        }
+    }
+}
 kotlin {
     androidTarget {
         compilerOptions {
