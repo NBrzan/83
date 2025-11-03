@@ -29,13 +29,18 @@ import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.StatisticsScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.group83.a83.controller.GameContainerController
+import com.group83.a83.cache.FullDatabase
+import com.group83.a83.model.GameType
 
 @Composable
 fun NavAndSideBarView(
     drawerState: androidx.compose.material3.DrawerState,
     selected: ScreenEnum,
     onSelectedChange: (ScreenEnum) -> Unit,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    controller: GameContainerController,
+    db: FullDatabase
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -127,8 +132,21 @@ fun NavAndSideBarView(
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView()
                     ScreenEnum.Statistics -> StatisticsScreenView()
-                    ScreenEnum.GameSelect -> GameSelectView()
-                    ScreenEnum.Game -> HomeScreenView()//GameContainerView()
+                    ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
+                        scope.launch {
+                            when (gameType) {
+                                GameType.flashcards -> {
+                                    val cards = db.getAllCards()
+                                    controller.setQuestions(cards)
+                                }
+                                else -> {
+                                    // TODO: load other game types
+                                }
+                            }
+                            onSelectedChange(ScreenEnum.Game)
+                        }
+                    })
+                    ScreenEnum.Game -> GameContainerView(controller)
                 }
             }
         }

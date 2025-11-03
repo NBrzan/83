@@ -2,7 +2,7 @@ package com.group83.a83.cache
 
 import com.group83.a83.model.FlashcardModel
 
-internal class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
+class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = Database(databaseDriverFactory.createDriver())
     private val dbQuery = database.databaseQueries
 

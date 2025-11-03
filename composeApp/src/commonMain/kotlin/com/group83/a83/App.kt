@@ -27,18 +27,15 @@ fun App(driverFactory: DatabaseDriverFactory) {
         val db = remember { FullDatabase(driverFactory) }
         val controller = remember { GameContainerController() }
 
-        //fullDatabase.insertCard(front = "Sample Front", back = "Sample Back")
-        val cards = db.getAllCards()
-        controller.setQuestions(cards)
-
-
 
         // Wire up the NavBar composable so App actually uses the remembered state
         NavAndSideBarView(
             drawerState = drawerState,
             selected = selected,
             onSelectedChange = { selected = it },
-            scope = scope
+            scope = scope,
+            controller = controller,
+            db = db
         )
 
 
