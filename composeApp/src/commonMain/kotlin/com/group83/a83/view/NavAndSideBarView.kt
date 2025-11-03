@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
+import com.group83.a83.view.screens.GameContainerView
+import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.StatisticsScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -92,6 +94,12 @@ fun NavAndSideBarView(
                         icon = { Text("📊", fontSize = 18.sp, textAlign = TextAlign.Center) },
                         label = { Text("Stats") }
                     )
+                    NavigationBarItem(
+                        selected = selected == ScreenEnum.GameSelect,
+                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
+                        icon = { Text(":)", fontSize = 18.sp, textAlign = TextAlign.Center) },
+                        label = { Text("Select Game") }
+                    )
                 }
             }
         ) { innerPadding ->
@@ -119,6 +127,8 @@ fun NavAndSideBarView(
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView()
                     ScreenEnum.Statistics -> StatisticsScreenView()
+                    ScreenEnum.GameSelect -> GameSelectView()
+                    ScreenEnum.Game -> HomeScreenView()//GameContainerView()
                 }
             }
         }
