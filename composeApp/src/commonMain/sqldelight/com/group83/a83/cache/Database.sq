@@ -1,0 +1,20 @@
+CREATE TABLE FlashCard(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  front TEXT NOT NULL,
+  back  TEXT NOT NULL
+);
+
+insertCard:
+INSERT INTO FlashCard(front, back)
+VALUES (?, ?);
+
+selectAllCards:
+SELECT * FROM FlashCard
+ORDER BY id DESC;
+
+selectCardById:
+SELECT * FROM FlashCard
+WHERE id = ?;
+
+removeAllCards:
+DELETE FROM FlashCard;
