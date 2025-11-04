@@ -39,8 +39,6 @@ fun ImageInputView(controller: ImageInputController) {
     var confirmed by remember { mutableStateOf(controller.confirmed) }
     var isCorrect by remember { mutableStateOf(controller.isCorrect) }
 
-    val correctAnswers = controller.question.answers.map { it.answer.trim().lowercase() }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,9 +85,8 @@ fun ImageInputView(controller: ImageInputController) {
         Button(
             onClick = {
                 controller.confirm()
-                confirmed = true
-                val normalizedInput = input.trim().lowercase()
-                isCorrect = correctAnswers.contains(normalizedInput)
+                confirmed = controller.confirmed
+                isCorrect = controller.isCorrect
             },
             enabled = input.isNotBlank() && !confirmed,
             shape = RoundedCornerShape(50),
