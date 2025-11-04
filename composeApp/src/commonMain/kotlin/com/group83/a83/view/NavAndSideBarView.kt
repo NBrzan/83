@@ -30,12 +30,13 @@ import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.GameContainerView
 import com.group83.a83.view.screens.GameSelectView
-import com.group83.a83.view.screens.StatisticsScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.group83.a83.controller.GameContainerController
 import com.group83.a83.cache.FullDatabase
+import com.group83.a83.controller.StatsController
 import com.group83.a83.model.GameType
+import com.group83.a83.view.screens.StatsScreen
 
 @Composable
 fun NavAndSideBarView(
@@ -124,8 +125,7 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .safeContentPadding(),
+                    .padding(innerPadding),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -144,7 +144,7 @@ fun NavAndSideBarView(
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView()
-                    ScreenEnum.Statistics -> StatisticsScreenView()
+                    ScreenEnum.Statistics -> StatsScreen(StatsController())
                     ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
                         scope.launch {
                             when (gameType) {
