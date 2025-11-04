@@ -28,10 +28,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ABCDView(controller: ABCDController) {
     var selected by remember { mutableStateOf(controller.selectedIndex) }
     var confirmed by remember { mutableStateOf(controller.confirmed) }
+    var isCorrect by remember { mutableStateOf(controller.isCorrect) }
 
     val labels = listOf("A", "B", "C", "D")
-
-    val correctIndices: List<Int> = controller.question.correctAnswers
 
     Column(
         modifier = Modifier
@@ -42,46 +41,32 @@ fun ABCDView(controller: ABCDController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Text(
             text = controller.question.question,
-            modifier = Modifier.padding(bottom = 24.dp),
-            textAlign = TextAlign.Center,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF4A4A4A)
+            color = Color(0xFF4A4A4A),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = 24.dp)
         )
 
         controller.question.answers.forEachIndexed { index, answer ->
             val isSelected = selected == index
-            val isCorrectAnswer = confirmed && correctIndices.contains(index)
-            val isWrongAnswer = confirmed && isSelected && !correctIndices.contains(index)
-
             val bgColor = when {
-                isCorrectAnswer -> Color(0xFFB2FF59)
-                isWrongAnswer -> Color(0xFFFF5252)
+                confirmed && controller.question.correctAnswers.contains(index.toLong()) -> Color(0xFFB2FF59)
+                confirmed && isSelected && isCorrect == false -> Color(0xFFFF5252)
                 isSelected -> Color(0xFF80D8FF)
-                else -> Color(0xFFF6F6F6)
+                else -> Color.White
             }
-
-            val borderColor = when {
-                isCorrectAnswer -> Color(0xFF2E7D32)
-                isWrongAnswer -> Color(0xFFC62828)
-                isSelected -> Color(0xFF0277BD)
-                else -> Color.Black
-            }
-
-            val scale by animateFloatAsState(
-                targetValue = if (isSelected) 1.05f else 1f
-            )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
-                    .graphicsLayer(scaleX = scale, scaleY = scale)
                     .clip(RoundedCornerShape(18.dp))
                     .background(bgColor)
-                    .border(3.dp, borderColor, RoundedCornerShape(18.dp))
+                    .border(3.dp, Color.Black, RoundedCornerShape(18.dp))
                     .clickable(enabled = !confirmed) {
                         controller.select(index)
                         selected = controller.selectedIndex
@@ -89,29 +74,7 @@ fun ABCDView(controller: ABCDController) {
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.8f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = labels[index],
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.Black
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    text = answer.answer,
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium
-                )
+                Text("${labels[index]}. ${answer.answer}", fontSize = 20.sp)
             }
         }
 
@@ -121,6 +84,7 @@ fun ABCDView(controller: ABCDController) {
             onClick = {
                 controller.confirm()
                 confirmed = controller.confirmed
+                isCorrect = controller.isCorrect
             },
             enabled = selected != null && !confirmed,
             shape = RoundedCornerShape(16.dp)

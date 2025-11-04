@@ -39,25 +39,23 @@ fun GameContainerView(controller: GameContainerController) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        Column {
+            when (question) {
+                is FlashcardModel -> FlashcardView(FlashcardController(question))
+                is ABCDModel -> ABCDView(ABCDController(question))
+                is ImageABCDModel -> ImageABCDView(ImageABCDController(question))
+                is ImageInputModel -> ImageInputView(ImageInputController(question))
+                is InputModel -> InputView(InputController(question))
+            }
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(onClick = { controller.previous() }, enabled = controller.index > 0) {
                 Text("\u25C0", fontSize = 24.sp)
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                when (question) {
-                    is FlashcardModel -> FlashcardView(FlashcardController(question))
-                    is ABCDModel -> ABCDView(ABCDController(question))
-                    is ImageABCDModel -> ImageABCDView(ImageABCDController(question))
-                    is ImageInputModel -> ImageInputView(ImageInputController(question))
-                    is InputModel -> InputView(InputController(question))
-                }
-            }
-            Spacer(modifier = Modifier.width(8.dp))
             IconButton(onClick = { controller.next() }, enabled = controller.index < controller.getListLength()) {
                 Text("\u25B6", fontSize = 24.sp)
             }
@@ -82,6 +80,6 @@ fun GameContainerPreview() {
     )
 
     val controller = GameContainerController()
-    controller.loadQuestions(questions)
+    controller.setQuestions(questions)
     GameContainerView(controller)
 }

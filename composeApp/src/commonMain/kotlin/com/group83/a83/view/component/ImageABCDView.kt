@@ -29,12 +29,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ImageABCDView(controller: ImageABCDController) {
+    // Local UI mirrors controller state (update after controller calls)
     var selected by remember { mutableStateOf(controller.selectedIndex) }
     var confirmed by remember { mutableStateOf(controller.confirmed) }
+    var isCorrect by remember { mutableStateOf(controller.isCorrect) }
 
     val labels = listOf("A", "B", "C", "D")
-
-    val correctIndices: List<Int> = controller.question.correctAnswers
 
     Column(
         modifier = Modifier
@@ -58,26 +58,17 @@ fun ImageABCDView(controller: ImageABCDController) {
             imageModel = { controller.question.imageSrc },
             modifier = Modifier
                 .size(200.dp)
-                .padding(bottom = 24.dp),
+                .padding(bottom = 24.dp)
         )
 
         controller.question.answers.forEachIndexed { index, answer ->
             val isSelected = selected == index
-            val isCorrectAnswer = confirmed && correctIndices.contains(index)
-            val isWrongAnswer = confirmed && isSelected && !correctIndices.contains(index)
 
             val bgColor = when {
-                isCorrectAnswer -> Color(0xFFB2FF59)
-                isWrongAnswer -> Color(0xFFFF5252)
+                confirmed && controller.question.correctAnswers.contains(index.toLong()) -> Color(0xFFB2FF59)
+                confirmed && isSelected && isCorrect == false -> Color(0xFFFF5252)
                 isSelected -> Color(0xFF80D8FF)
                 else -> Color(0xFFF6F6F6)
-            }
-
-            val borderColor = when {
-                isCorrectAnswer -> Color(0xFF2E7D32)
-                isWrongAnswer -> Color(0xFFC62828)
-                isSelected -> Color(0xFF0277BD)
-                else -> Color.Black
             }
 
             val scale by animateFloatAsState(
@@ -91,7 +82,7 @@ fun ImageABCDView(controller: ImageABCDController) {
                     .graphicsLayer(scaleX = scale, scaleY = scale)
                     .clip(RoundedCornerShape(18.dp))
                     .background(bgColor)
-                    .border(3.dp, borderColor, RoundedCornerShape(18.dp))
+                    .border(3.dp, Color.Black, RoundedCornerShape(18.dp))
                     .clickable(enabled = !confirmed) {
                         controller.select(index)
                         selected = controller.selectedIndex
@@ -131,6 +122,7 @@ fun ImageABCDView(controller: ImageABCDController) {
             onClick = {
                 controller.confirm()
                 confirmed = controller.confirmed
+                isCorrect = controller.isCorrect
             },
             enabled = selected != null && !confirmed,
             shape = RoundedCornerShape(16.dp)
@@ -139,6 +131,7 @@ fun ImageABCDView(controller: ImageABCDController) {
         }
     }
 }
+
 
 @Preview
 @Composable

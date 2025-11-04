@@ -4,7 +4,7 @@ import com.group83.a83.model.GameQuestion
 
 class GameContainerController {
     private var questions = listOf<GameQuestion>()
-    private var index = 0
+    var index = 0
 
     fun getListLength() = questions.lastIndex
 
