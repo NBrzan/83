@@ -14,7 +14,10 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     private val inputQueries = database.inputQuestionsQueries
 
     init {
-        ensureDefaultSubjectExists()
+        //ensureDefaultSubjectExists()
+        val seeder = DatabaseSeeder(this)
+        seeder.seed()
+
     }
 
     // Keep existing API
