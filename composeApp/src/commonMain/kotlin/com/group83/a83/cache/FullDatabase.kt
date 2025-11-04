@@ -4,6 +4,7 @@ import com.group83.a83.model.FlashcardModel
 import com.group83.a83.model.ABCDModel
 import com.group83.a83.model.AnswerModel
 import com.group83.a83.model.ImageABCDModel
+import com.group83.a83.model.Stats
 
 class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = Database(databaseDriverFactory.createDriver())
@@ -173,6 +174,27 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }.executeAsList()
 
         return result
+    }
+
+    internal fun saveStats(stats: Stats) {
+        dbQuery.transaction {
+            dbQuery.clearStats()
+            dbQuery.insertStats(
+                stats.correct.toLong(),
+                stats.incorrect.toLong(),
+                stats.unanswered.toLong()
+            )
+        }
+    }
+
+    internal fun getStats(): Stats {
+        return dbQuery.selectStats { correct, incorrect, unanswered ->
+            Stats(
+                correct = correct.toInt(),
+                incorrect = incorrect.toInt(),
+                unanswered = unanswered.toInt()
+            )
+        }.executeAsOneOrNull() ?: Stats(0, 0, 0)
     }
 }
 
