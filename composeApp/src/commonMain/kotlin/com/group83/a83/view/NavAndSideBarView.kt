@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group83.a83.cache.FullDatabase
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.GameContainerView
@@ -36,7 +37,13 @@ import com.group83.a83.view.screens.StatisticsScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.group83.a83.controller.GameContainerController
+import com.group83.a83.model.GameQuestion
 import com.group83.a83.model.GameType
+import com.group83.a83.view.component.FlashcardForm
+import com.group83.a83.view.component.InputAnswerForm
+import com.group83.a83.view.component.MultipleChoiceForm
+import com.group83.a83.view.screens.GameSelectView
+import com.group83.a83.view.screens.UiState
 
 @Composable
 fun NavAndSideBarView(
@@ -45,10 +52,12 @@ fun NavAndSideBarView(
     onSelectedChange: (ScreenEnum) -> Unit,
     scope: CoroutineScope,
     controller: GameContainerController,
-    db: FullDatabase
+    db: FullDatabase,
+    uiState: UiState
 ) {
     var subjects by remember { mutableStateOf(db.getAllSubjects()) }
     var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
+    var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -144,7 +153,7 @@ fun NavAndSideBarView(
 
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
-                    ScreenEnum.Creator -> CreatorScreenView()
+                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
                     ScreenEnum.Statistics -> StatisticsScreenView()
                     ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
                         scope.launch {
@@ -169,12 +178,24 @@ fun NavAndSideBarView(
                                     val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
                                     controller.setQuestions(questions)
                                 }
-
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
                     })
+
                     ScreenEnum.Game -> GameContainerView(controller)
+                    ScreenEnum.MultipleForm -> {
+                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.InputForm -> {
+                        InputAnswerForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.FlashcardForm -> {
+                        FlashcardForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
                 }
             }
         }
@@ -198,4 +219,13 @@ private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = fa
             color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
         )
     }
+}
+
+val onAddQuestion: (GameQuestion) -> Unit = { q ->
+
+}
+
+val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
+    val trimmed = newSubject.trim()
+    val chosenEmoji = if (emoji.isBlank()) "📚" else emoji
 }

@@ -16,8 +16,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.group83.a83.view.NavAndSideBarView
 import com.group83.a83.view.ScreenEnum
 import com.group83.a83.view.screens.UiState
-import com.group83.a83.view.screens.Subject
-import com.group83.a83.model.GameQuestion
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
@@ -27,37 +25,10 @@ fun App(driverFactory: DatabaseDriverFactory) {
         var selected by remember { mutableStateOf(ScreenEnum.Home) }
         val scope = rememberCoroutineScope()
 
-        // Remember UiState at the top level so selection persists across the UI
-        var uiState by remember { mutableStateOf(UiState()) }
-
-        // Remember created questions at the app level so separate form screens can add to it
-        var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
-
-        // Handler to add a subject if it doesn't already exist
-        val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
-            val trimmed = newSubject.trim()
-            val chosenEmoji = if (emoji.isBlank()) "📚" else emoji
-            if (trimmed.isNotEmpty()) {
-                val exists = uiState.subjects.any { it.name == trimmed }
-                uiState = if (!exists) {
-                    uiState.copy(subjects = uiState.subjects + Subject(trimmed, chosenEmoji), currentSelectedSubject = trimmed)
-                } else {
-                    // if exists, update its emoji and select it
-                    val updated = uiState.subjects.map { if (it.name == trimmed) it.copy(emoji = chosenEmoji) else it }
-                    uiState.copy(subjects = updated, currentSelectedSubject = trimmed)
-                }
-            }
-        }
-
-        val onAddQuestion: (GameQuestion) -> Unit = { q ->
-            createdQuestions = createdQuestions + q
-            // After adding, navigate back to Creator screen to show list
-            selected = ScreenEnum.Creator
-        }
-
-        // Call NavAndSideBarView with positional arguments matching its signature
         val db = remember { FullDatabase(driverFactory) }
         val controller = remember { GameContainerController() }
+
+        var uiState by remember { mutableStateOf(UiState()) }
         //db.ensureDefaultSubjectExists()
 
         // Wire up the NavBar composable so App actually uses the remembered state
@@ -67,16 +38,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
             onSelectedChange = { selected = it },
             scope = scope,
             controller = controller,
-            db = db
-            drawerState,
-            selected,
-            { selected = it },
-            scope,
-            uiState,
-            { uiState = it },
-            onAddSubject,
-            createdQuestions,
-            onAddQuestion
+            db = db,
+            uiState = uiState
         )
 
 

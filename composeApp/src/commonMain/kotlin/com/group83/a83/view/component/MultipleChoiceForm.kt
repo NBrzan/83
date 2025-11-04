@@ -81,7 +81,7 @@ fun MultipleChoiceForm(
             if (question.isNotBlank() && nonEmpty.isNotEmpty() && hasCorrect && (!includeImage || imageSrc.isNotBlank())) {
                 val answerModels = answers.mapIndexed { i, a -> AnswerModel(i, a.trim()) }
                 val id = Random.nextInt(1, Int.MAX_VALUE)
-                val correctAnswers = correct.mapIndexedNotNull { i, c -> if (c && answers[i].isNotBlank()) i else null }
+                val correctAnswers = correct.mapIndexedNotNull { i, c -> if (c && answers[i].isNotBlank()) i.toLong() else null }
                 if (includeImage && imageSrc.isNotBlank()) {
                     onAdd(ImageABCDModel(id = id, imageSrc = imageSrc.trim(), question = question.trim(), answers = answerModels, correctAnswers = correctAnswers))
                 } else {
