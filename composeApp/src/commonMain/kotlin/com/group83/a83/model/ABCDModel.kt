@@ -5,5 +5,5 @@ data class ABCDModel(
     val id: Int,
     val question: String,
     val answers: List<AnswerModel>,
-    val correctAnswers: List<Int>,
+    val correctAnswers: List<Long>,
 ) : GameQuestion()

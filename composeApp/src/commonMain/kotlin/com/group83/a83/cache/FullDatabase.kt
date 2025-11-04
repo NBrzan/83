@@ -1,6 +1,8 @@
 package com.group83.a83.cache
 
 import com.group83.a83.model.FlashcardModel
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.AnswerModel
 
 class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = Database(databaseDriverFactory.createDriver())
@@ -73,6 +75,7 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
             insertSubject("English")
             subjects = getAllSubjects()
             ensureDefaultCardsExistsForSubject(subjects[0].id)
+            ensureDefaultABCDxistsForSubject(subjects[0].id)
         }
     }
 
@@ -83,7 +86,49 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
+    private fun ensureDefaultABCDxistsForSubject(id: Long) {
+        val abcd = getABCDQuestionsForSubject(id)
+        if (abcd.isEmpty()) {
+            insertABCDQuestionWithAnswers(id, "Is this a question?", listOf("Yes", "No", "Maybe", "Not sure"), listOf(0))
+        }
+    }
+
+    internal fun insertABCDQuestionWithAnswers(subjectId: Long, questionText: String, answers: List<String>, correctPositions: List<Int>) {
+        require(answers.isNotEmpty()) { "answers cannot be empty" }
+        dbQuery.transaction {
+            dbQuery.insertAbcdQuestion(subjectId, questionText)
+            val qId = dbQuery.selectLatestAbcdQuestionId().executeAsOne()
+            answers.forEachIndexed { idx, ans ->
+                val position = (idx + 1).toLong()
+                val isCorrect = if (correctPositions.contains(idx)) 1L else 0L
+                dbQuery.insertAbcdAnswer(qId, ans, isCorrect)
+            }
+        }
+    }
+
+    internal fun getABCDQuestionsForSubject(subjectId: Long): List<ABCDModel> {
+        val result = mutableListOf<ABCDModel>()
+        dbQuery.selectAbcdQuestionsBySubject(subjectId) { qId, question ->
+            val answers = dbQuery.selectAbcdAnswersByQuestion(qId) { aId, answer, isCorrect ->
+                AnswerModel(id = aId.toInt(), answer = answer)
+            }.executeAsList()
+
+            val correctIds = dbQuery.selectCorrectAbcdAnswersIdsByQuestion(qId).executeAsList()
+
+
+            result.add(
+                ABCDModel(
+                    id = qId.toInt(),
+                    question = question,
+                    answers = answers,
+                    correctAnswers = correctIds
+                )
+            )
+        }.executeAsList()
+
+        return result
+    }
+
 }
 
-
-//data class Subject(val id: Long, val name: String)
+//internal data class Subject(val id: Long, val name: String)

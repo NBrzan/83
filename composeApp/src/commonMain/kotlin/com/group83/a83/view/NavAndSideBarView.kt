@@ -152,6 +152,10 @@ fun NavAndSideBarView(
                                     val cards = db.getCardsForSubject(selectedSubjectId)
                                     controller.setQuestions(cards)
                                 }
+                                GameType.abcd -> {
+                                    val questions = db.getABCDQuestionsForSubject(selectedSubjectId)
+                                    controller.setQuestions(questions)
+                                }
                                 else -> {
                                     // TODO: load other game types
                                 }
