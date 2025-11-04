@@ -9,6 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.Composable
+import com.group83.a83.cache.DatabaseDriverFactory
+import com.group83.a83.cache.FullDatabase
+import com.group83.a83.controller.GameContainerController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import com.group83.a83.view.NavAndSideBarView
 import com.group83.a83.view.ScreenEnum
@@ -18,7 +21,7 @@ import com.group83.a83.model.GameQuestion
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
-fun App() {
+fun App(driverFactory: DatabaseDriverFactory) {
     MaterialTheme {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var selected by remember { mutableStateOf(ScreenEnum.Home) }
@@ -53,7 +56,18 @@ fun App() {
         }
 
         // Call NavAndSideBarView with positional arguments matching its signature
+        val db = remember { FullDatabase(driverFactory) }
+        val controller = remember { GameContainerController() }
+        //db.ensureDefaultSubjectExists()
+
+        // Wire up the NavBar composable so App actually uses the remembered state
         NavAndSideBarView(
+            drawerState = drawerState,
+            selected = selected,
+            onSelectedChange = { selected = it },
+            scope = scope,
+            controller = controller,
+            db = db
             drawerState,
             selected,
             { selected = it },
@@ -64,5 +78,7 @@ fun App() {
             createdQuestions,
             onAddQuestion
         )
+
+
     }
 }

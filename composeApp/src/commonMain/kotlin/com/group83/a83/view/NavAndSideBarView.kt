@@ -19,23 +19,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.model.GameQuestion
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
+import com.group83.a83.view.screens.GameContainerView
 import com.group83.a83.view.screens.StatisticsScreenView
-import com.group83.a83.view.screens.UiState
-import com.group83.a83.view.screens.Subject
-import com.group83.a83.view.component.MultipleChoiceForm
-import com.group83.a83.view.component.InputAnswerForm
-import com.group83.a83.view.component.FlashcardForm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.group83.a83.controller.GameContainerController
+import com.group83.a83.model.GameType
 
 @Composable
 fun NavAndSideBarView(
@@ -43,13 +44,11 @@ fun NavAndSideBarView(
     selected: ScreenEnum,
     onSelectedChange: (ScreenEnum) -> Unit,
     scope: CoroutineScope,
-    uiState: UiState,
-    onUiStateChange: (UiState) -> Unit,
-    onAddSubject: (String, String) -> Unit,
-    createdQuestions: List<GameQuestion>,
-    onAddQuestion: (GameQuestion) -> Unit
+    controller: GameContainerController,
+    db: FullDatabase
 ) {
-    // Use uiState.currentSelectedSubject as the source of truth for which subject is selected.
+    var subjects by remember { mutableStateOf(db.getAllSubjects()) }
+    var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -60,32 +59,32 @@ fun NavAndSideBarView(
                     .safeContentPadding()
                     .padding(vertical = 8.dp)) {
 
-                    uiState.subjects.forEach { subject: Subject ->
-                        DrawerItem(
-                            iconText = subject.emoji,
-                            label = subject.name,
-                            isSelected = uiState.currentSelectedSubject == subject.name
-                        ) {
-                            onUiStateChange(uiState.copy(currentSelectedSubject = subject.name))
+                    // List subjects dynamically
+                    subjects.forEach { subject ->
+                        DrawerItem(iconText = "•", label = subject.name) {
+                            selectedSubjectId = subject.id
+                            // Close drawer
                             scope.launch { drawerState.close() }
                         }
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-                    DrawerItem(iconText = "➕", label = "Add new subject", isSelected = false) {
-                        onSelectedChange(ScreenEnum.Creator)
+                    // Add new subject (simple quick action)
+                    DrawerItem(iconText = "➕", label = "Add new subject") {
+                        val newName = "Subject ${subjects.size + 1}"
+                        db.insertSubject(newName)
+                        subjects = db.getAllSubjects()
+                        selectedSubjectId = subjects.firstOrNull()?.id ?: selectedSubjectId
                         scope.launch { drawerState.close() }
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    DrawerItem(iconText = "⚙️", label = "Settings", isSelected = false) {
-                        scope.launch { drawerState.close() }
+                    DrawerItem(iconText = "⚙️", label = "Settings") {
+                        // settings
                     }
 
-                    DrawerItem(iconText = "ℹ️", label = "About us", isSelected = false) {
-                        scope.launch { drawerState.close() }
+                    DrawerItem(iconText = "ℹ️", label = "About us") {
+                        // about
                     }
                 }
             }
@@ -114,6 +113,12 @@ fun NavAndSideBarView(
                         icon = { Text("📊", fontSize = 18.sp, textAlign = TextAlign.Center) },
                         label = { Text("Stats") }
                     )
+                    NavigationBarItem(
+                        selected = selected == ScreenEnum.GameSelect,
+                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
+                        icon = { Text(":)", fontSize = 18.sp, textAlign = TextAlign.Center) },
+                        label = { Text("Select Game") }
+                    )
                 }
             }
         ) { innerPadding ->
@@ -125,8 +130,10 @@ fun NavAndSideBarView(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
+                        // toggle drawer using coroutine scope
                         scope.launch {
                             if (drawerState.isClosed) drawerState.open() else drawerState.close()
                         }
@@ -136,22 +143,38 @@ fun NavAndSideBarView(
                 }
 
                 when (selected) {
-                    ScreenEnum.Home -> HomeScreenView(uiState = uiState)
-                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
-                    ScreenEnum.Statistics -> StatisticsScreenView(uiState = uiState)
+                    ScreenEnum.Home -> HomeScreenView()
+                    ScreenEnum.Creator -> CreatorScreenView()
+                    ScreenEnum.Statistics -> StatisticsScreenView()
+                    ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
+                        scope.launch {
+                            when (gameType) {
+                                GameType.flashcards -> {
+                                    val cards = db.getCardsForSubject(selectedSubjectId)
+                                    controller.setQuestions(cards)
+                                }
+                                GameType.abcd -> {
+                                    val questions = db.getABCDQuestionsForSubject(selectedSubjectId)
+                                    controller.setQuestions(questions)
+                                }
+                                GameType.imageABCD -> {
+                                    val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
+                                    controller.setQuestions(questions)
+                                }
+                                GameType.input -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
+                                    controller.setQuestions(questions)
+                                }
+                                GameType.imageInput -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
+                                    controller.setQuestions(questions)
+                                }
 
-                    ScreenEnum.MultipleForm -> {
-                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
-                    ScreenEnum.InputForm -> {
-                        InputAnswerForm(onAdd = { q -> onAddQuestion(q) })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
-                    ScreenEnum.FlashcardForm -> {
-                        FlashcardForm(onAdd = { q -> onAddQuestion(q) })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
+                            }
+                            onSelectedChange(ScreenEnum.Game)
+                        }
+                    })
+                    ScreenEnum.Game -> GameContainerView(controller)
                 }
             }
         }
