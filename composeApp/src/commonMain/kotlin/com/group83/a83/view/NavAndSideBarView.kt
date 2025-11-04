@@ -160,9 +160,15 @@ fun NavAndSideBarView(
                                     val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
                                     controller.setQuestions(questions)
                                 }
-                                else -> {
-                                    // TODO: load other game types
+                                GameType.input -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
+                                    controller.setQuestions(questions)
                                 }
+                                GameType.imageInput -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
+                                    controller.setQuestions(questions)
+                                }
+
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
