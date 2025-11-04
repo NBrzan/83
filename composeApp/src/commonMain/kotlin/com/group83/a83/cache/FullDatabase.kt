@@ -111,14 +111,14 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    internal fun insertABCDQuestionWithAnswers(subjectId: Long, questionText: String, answers: List<String>, correctPositions: List<Int>) {
+    internal fun insertABCDQuestionWithAnswers(subjectId: Long, questionText: String, answers: List<String>, correctPositions: List<Long>) {
         require(answers.isNotEmpty()) { "answers cannot be empty" }
         dbQuery.transaction {
             dbQuery.insertAbcdQuestion(subjectId, questionText)
             val qId = dbQuery.selectLatestAbcdQuestionId().executeAsOne()
             answers.forEachIndexed { idx, ans ->
                 // question_type = 0 for normal ABCDQuestion
-                val isCorrect = if (correctPositions.contains(idx)) 1L else 0L
+                val isCorrect = if (correctPositions.contains(idx.toLong())) 1L else 0L
                 dbQuery.insertAbcdAnswer(qId, 0L, ans, isCorrect)
             }
         }
@@ -161,14 +161,14 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         return result
     }
 
-    internal fun insertABCDImageQuestionWithAnswers(subjectId: Long, questionText: String, imageSrcText: String, answers: List<String>, correctPositions: List<Int>) {
+    internal fun insertABCDImageQuestionWithAnswers(subjectId: Long, questionText: String, imageSrcText: String, answers: List<String>, correctPositions: List<Long>) {
         require(answers.isNotEmpty()) { "answers cannot be empty" }
         dbQuery.transaction {
             dbQuery.insertAbcdImageQuestion(subjectId, questionText, imageSrcText)
             val qId = dbQuery.selectLatestABCDImageQuestionId().executeAsOne()
             answers.forEachIndexed { idx, ans ->
                 // question_type = 1 for image questions
-                val isCorrect = if (correctPositions.contains(idx)) 1L else 0L
+                val isCorrect = if (correctPositions.contains(idx.toLong())) 1L else 0L
                 dbQuery.insertAbcdAnswer(qId, 1L, ans, isCorrect)
             }
         }

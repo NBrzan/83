@@ -29,7 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group83.a83.cache.FlashCard
 import com.group83.a83.cache.FullDatabase
+import com.group83.a83.cache.InputQuestion
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.GameContainerView
@@ -37,8 +39,13 @@ import com.group83.a83.view.screens.StatisticsScreenView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import com.group83.a83.controller.GameContainerController
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.FlashcardModel
 import com.group83.a83.model.GameQuestion
 import com.group83.a83.model.GameType
+import com.group83.a83.model.ImageABCDModel
+import com.group83.a83.model.ImageInputModel
+import com.group83.a83.model.InputModel
 import com.group83.a83.view.component.FlashcardForm
 import com.group83.a83.view.component.InputAnswerForm
 import com.group83.a83.view.component.MultipleChoiceForm
@@ -151,6 +158,52 @@ fun NavAndSideBarView(
                     }
                 }
 
+                val onAddQuestion: (GameQuestion) -> Unit = { q ->
+                    when (q) {
+                        is FlashcardModel -> {
+                            db.insertCardWithSubject(
+                                subjectId = selectedSubjectId,
+                                front = q.front,
+                                back = q.back
+                            )
+                        }
+                        is ABCDModel -> {
+                            db.insertABCDQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                correctPositions = q.correctAnswers
+                            )
+                        }
+                        is ImageABCDModel -> {
+                            db.insertABCDImageQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                correctPositions = q.correctAnswers,
+                                imageSrcText = q.imageSrc
+                            )
+                        }
+                        is InputModel -> {
+                            db.insertInputQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                imageSrcText = null
+                            )
+                        }
+                        is ImageInputModel -> {
+                            db.insertInputQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                imageSrcText = q.imageSrc
+                            )
+                        }
+                    }
+                    createdQuestions = createdQuestions + q
+                }
+
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
@@ -221,9 +274,7 @@ private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = fa
     }
 }
 
-val onAddQuestion: (GameQuestion) -> Unit = { q ->
 
-}
 
 val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
     val trimmed = newSubject.trim()
