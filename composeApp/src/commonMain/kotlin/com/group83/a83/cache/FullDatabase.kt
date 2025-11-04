@@ -11,6 +11,7 @@ import com.group83.a83.model.InputModel
 class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     private val database = Database(databaseDriverFactory.createDriver())
     private val dbQuery = database.databaseQueries
+    private val inputQueries = database.inputQuestionsQueries
 
     init {
         ensureDefaultSubjectExists()
@@ -137,7 +138,7 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     internal fun getABCDQuestionsForSubject(subjectId: Long): List<ABCDModel> {
         val result = mutableListOf<ABCDModel>()
         dbQuery.selectAbcdQuestionsBySubject(subjectId) { qId, question ->
-            val answers = dbQuery.selectAbcdAnswersByQuestion(qId, 0L) { aId, answer, isCorrect ->
+            val answers = dbQuery.selectAbcdAnswersByQuestion(qId, 0L) { aId, answer, _isCorrect ->
                 AnswerModel(id = aId.toInt(), answer = answer)
             }.executeAsList()
 
@@ -173,7 +174,7 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     internal fun getABCDImageQuestionsForSubject(subjectId: Long): List<ImageABCDModel> {
         val result = mutableListOf<ImageABCDModel>()
         dbQuery.selectABCDImageQuestionsBySubject(subjectId) { qId, question, image_src ->
-            val answers = dbQuery.selectAbcdAnswersByQuestion(qId, 1L) { aId, answer, isCorrect ->
+            val answers = dbQuery.selectAbcdAnswersByQuestion(qId, 1L) { aId, answer, _isCorrect ->
                 AnswerModel(id = aId.toInt(), answer = answer)
             }.executeAsList()
 
@@ -198,11 +199,11 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         require(answers.isNotEmpty()) { "answers cannot be empty" }
         val questionType = if (imageSrcText == null) 0L else 1L
         dbQuery.transaction {
-            dbQuery.insertInputQuestion(subjectId, questionText, imageSrcText, questionType )
-            val qId = dbQuery.selectLatestInputQuestionId().executeAsOne()
+            inputQueries.insertInputQuestion(subjectId, questionText, imageSrcText, questionType )
+            val qId = inputQueries.selectLatestInputQuestionId().executeAsOne()
 
-            answers.forEachIndexed { idx, ans ->
-                dbQuery.insertInputAnswer(qId, ans)
+            answers.forEach { ans ->
+                inputQueries.insertInputAnswer(qId, ans)
             }
         }
     }
@@ -210,8 +211,8 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
     internal fun getInputQuestionsForSubject(subjectId: Long, questionType: Long): List<GameQuestion> {
         val result = mutableListOf<GameQuestion>()
 
-        dbQuery.selectInputByType(subjectId, questionType) { qId, qType, question, image_src, subjId ->
-            val answers = dbQuery.selectAnswersForInputQuestion(qId) { aId, answer ->
+        inputQueries.selectInputByType(subjectId, questionType) { qId, qType, question, image_src, _subjId ->
+            val answers = inputQueries.selectAnswersForInputQuestion(qId) { aId, answer ->
                 AnswerModel(id = aId.toInt(), answer = answer)
             }.executeAsList()
 
