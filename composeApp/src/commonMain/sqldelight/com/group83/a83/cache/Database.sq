@@ -51,6 +51,7 @@ CREATE TABLE ABCDQuestion(
 CREATE TABLE ABCDAnswer(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   question_id INTEGER NOT NULL,
+  question_type INTEGER NOT NULL DEFAULT 0, -- 0 = ABCDQuestion, 1 = ABCDImageQuestion
   answer TEXT NOT NULL,
   is_correct INTEGER NOT NULL DEFAULT 0
 );
@@ -59,13 +60,12 @@ insertAbcdQuestion:
 INSERT INTO ABCDQuestion(subject_id, question)
 VALUES (?, ?);
 
--- helper to read the last inserted question id (used inside transaction)
 selectLatestAbcdQuestionId:
 SELECT id FROM ABCDQuestion ORDER BY id DESC LIMIT 1;
 
 insertAbcdAnswer:
-INSERT INTO ABCDAnswer(question_id, answer, is_correct)
-VALUES (?, ?, ?);
+INSERT INTO ABCDAnswer(question_id, question_type, answer, is_correct)
+VALUES (?, ?, ?, ?);
 
 selectAbcdQuestionsBySubject:
 SELECT id, question FROM ABCDQuestion WHERE subject_id = ? ORDER BY id DESC;
@@ -74,7 +74,25 @@ selectAbcdQuestionById:
 SELECT id, question FROM ABCDQuestion WHERE id = ?;
 
 selectAbcdAnswersByQuestion:
-SELECT id, answer, is_correct FROM ABCDAnswer WHERE question_id = ?;
+SELECT id, answer, is_correct FROM ABCDAnswer WHERE question_id = ? AND question_type = ?;
 
 selectCorrectAbcdAnswersIdsByQuestion:
-SELECT id FROM ABCDAnswer WHERE question_id = ? AND is_correct = 1;
+SELECT id FROM ABCDAnswer WHERE question_id = ? AND question_type = ? AND is_correct = 1;
+
+CREATE TABLE ABCDImageQuestion(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  subject_id INTEGER NOT NULL DEFAULT 1,
+  question TEXT NOT NULL,
+  image_src TEXT NOT NULL
+);
+
+insertAbcdImageQuestion:
+INSERT INTO ABCDImageQuestion(subject_id, question, image_src)
+VALUES (?, ?, ?);
+
+selectABCDImageQuestionsBySubject:
+SELECT id, question, image_src FROM ABCDImageQuestion WHERE subject_id = ? ORDER BY id DESC;
+
+
+selectLatestABCDImageQuestionId:
+SELECT id FROM ABCDImageQuestion ORDER BY id DESC LIMIT 1;

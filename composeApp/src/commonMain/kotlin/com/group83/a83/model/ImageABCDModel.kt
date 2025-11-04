@@ -6,5 +6,5 @@ data class ImageABCDModel(
     val imageSrc: String,
     val question: String,
     val answers: List<AnswerModel>,
-    val correctAnswers: List<Int>,
+    val correctAnswers: List<Long>,
 ) : GameQuestion()
