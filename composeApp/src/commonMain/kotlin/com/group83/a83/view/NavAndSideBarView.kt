@@ -204,6 +204,13 @@ fun NavAndSideBarView(
                     createdQuestions = createdQuestions + q
                 }
 
+                val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
+                    val trimmed = newSubject.trim()
+                    val chosenEmoji = emoji.ifBlank { "📚" }
+                    db.insertUniqueSubject("$chosenEmoji $trimmed")
+                    subjects = db.getAllSubjects()
+                }
+
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
@@ -276,7 +283,3 @@ private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = fa
 
 
 
-val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
-    val trimmed = newSubject.trim()
-    val chosenEmoji = if (emoji.isBlank()) "📚" else emoji
-}

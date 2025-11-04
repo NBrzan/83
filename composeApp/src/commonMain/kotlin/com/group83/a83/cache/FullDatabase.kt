@@ -65,6 +65,13 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         dbQuery.insertSubject(name)
     }
 
+    internal fun insertUniqueSubject(name: String) {
+        val subjects = dbQuery.getSubjectsByName(name).executeAsList()
+        if (subjects.isEmpty()) {
+            dbQuery.insertSubject(name)
+        }
+    }
+
     internal fun insertCardWithSubject(subjectId: Long, front: String, back: String) {
         dbQuery.insertCardWithSubject(subjectId, front, back)
     }

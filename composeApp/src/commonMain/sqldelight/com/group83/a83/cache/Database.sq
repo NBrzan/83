@@ -22,6 +22,9 @@ insertSubject:
 INSERT INTO Subject(name)
 VALUES (?);
 
+getSubjectsByName:
+SELECT id, name FROM Subject WHERE name = ?;
+
 selectAllCards:
 SELECT id, front, back FROM FlashCard
 ORDER BY id DESC;
