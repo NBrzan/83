@@ -17,6 +17,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +46,9 @@ fun NavAndSideBarView(
     controller: GameContainerController,
     db: FullDatabase
 ) {
+    var subjects by remember { mutableStateOf(db.getAllSubjects()) }
+    var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -51,16 +58,22 @@ fun NavAndSideBarView(
                     .safeContentPadding()
                     .padding(vertical = 8.dp)) {
 
-                    DrawerItem(iconText = "🌐", label = "Angleščina") {
-                        // content
+                    // List subjects dynamically
+                    subjects.forEach { subject ->
+                        DrawerItem(iconText = "•", label = subject.name) {
+                            selectedSubjectId = subject.id
+                            // Close drawer
+                            scope.launch { drawerState.close() }
+                        }
                     }
 
-                    DrawerItem(iconText = "🗺️", label = "Geografija") {
-                        // content
-                    }
-
+                    // Add new subject (simple quick action)
                     DrawerItem(iconText = "➕", label = "Add new subject") {
-                        // content
+                        val newName = "Subject ${subjects.size + 1}"
+                        db.insertSubject(newName)
+                        subjects = db.getAllSubjects()
+                        selectedSubjectId = subjects.firstOrNull()?.id ?: selectedSubjectId
+                        scope.launch { drawerState.close() }
                     }
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -136,7 +149,7 @@ fun NavAndSideBarView(
                         scope.launch {
                             when (gameType) {
                                 GameType.flashcards -> {
-                                    val cards = db.getAllCards()
+                                    val cards = db.getCardsForSubject(selectedSubjectId)
                                     controller.setQuestions(cards)
                                 }
                                 else -> {

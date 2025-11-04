@@ -26,7 +26,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
 
         val db = remember { FullDatabase(driverFactory) }
         val controller = remember { GameContainerController() }
-
+        //db.ensureDefaultSubjectExists()
 
         // Wire up the NavBar composable so App actually uses the remembered state
         NavAndSideBarView(
