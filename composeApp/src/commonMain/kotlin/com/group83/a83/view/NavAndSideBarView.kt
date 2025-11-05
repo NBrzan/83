@@ -69,19 +69,21 @@ fun NavAndSideBarView(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .safeContentPadding()
-                    .padding(vertical = 8.dp)) {
-
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .safeContentPadding()
+                        .padding(vertical = 8.dp)
+                ) {
+                    // List subjects dynamically
                     subjects.forEach { subject ->
                         DrawerItem(iconText = "•", label = subject.name) {
                             selectedSubjectId = subject.id
-                            // Close drawer
                             scope.launch { drawerState.close() }
                         }
                     }
 
+                    // Add new subject (simple quick action)
                     DrawerItem(iconText = "➕", label = "Add new subject") {
                         val newName = "Subject ${subjects.size + 1}"
                         db.insertSubject(newName)
@@ -92,13 +94,8 @@ fun NavAndSideBarView(
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    DrawerItem(iconText = "⚙️", label = "Settings") {
-                        // settings
-                    }
-
-                    DrawerItem(iconText = "ℹ️", label = "About us") {
-                        // about
-                    }
+                    DrawerItem(iconText = "⚙️", label = "Settings") { /* settings */ }
+                    DrawerItem(iconText = "ℹ️", label = "About us") { /* about */ }
                 }
             }
         }
@@ -126,6 +123,7 @@ fun NavAndSideBarView(
                         icon = { Text("📊", fontSize = 18.sp, textAlign = TextAlign.Center) },
                         label = { Text("Stats") }
                     )
+
                     NavigationBarItem(
                         selected = selected == ScreenEnum.GameSelect,
                         onClick = { onSelectedChange(ScreenEnum.GameSelect) },
@@ -143,11 +141,10 @@ fun NavAndSideBarView(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) drawerState.open() else drawerState.close()
-                        }
+                        scope.launch { if (drawerState.isClosed) drawerState.open() else drawerState.close() }
                     }) {
                         Text("☰", fontSize = 20.sp)
                     }
@@ -155,46 +152,11 @@ fun NavAndSideBarView(
 
                 val onAddQuestion: (GameQuestion) -> Unit = { q ->
                     when (q) {
-                        is FlashcardModel -> {
-                            db.insertCardWithSubject(
-                                subjectId = selectedSubjectId,
-                                front = q.front,
-                                back = q.back
-                            )
-                        }
-                        is ABCDModel -> {
-                            db.insertABCDQuestionWithAnswers(
-                                subjectId = selectedSubjectId,
-                                questionText = q.question,
-                                answers = q.answers.map { it.answer },
-                                correctPositions = q.correctAnswers
-                            )
-                        }
-                        is ImageABCDModel -> {
-                            db.insertABCDImageQuestionWithAnswers(
-                                subjectId = selectedSubjectId,
-                                questionText = q.question,
-                                answers = q.answers.map { it.answer },
-                                correctPositions = q.correctAnswers,
-                                imageSrcText = q.imageSrc
-                            )
-                        }
-                        is InputModel -> {
-                            db.insertInputQuestionWithAnswers(
-                                subjectId = selectedSubjectId,
-                                questionText = q.question,
-                                answers = q.answers.map { it.answer },
-                                imageSrcText = null
-                            )
-                        }
-                        is ImageInputModel -> {
-                            db.insertInputQuestionWithAnswers(
-                                subjectId = selectedSubjectId,
-                                questionText = q.question,
-                                answers = q.answers.map { it.answer },
-                                imageSrcText = q.imageSrc
-                            )
-                        }
+                        is FlashcardModel -> db.insertCardWithSubject(subjectId = selectedSubjectId, front = q.front, back = q.back)
+                        is ABCDModel -> db.insertABCDQuestionWithAnswers(subjectId = selectedSubjectId, questionText = q.question, answers = q.answers.map { it.answer }, correctPositions = q.correctAnswers)
+                        is ImageABCDModel -> db.insertABCDImageQuestionWithAnswers(subjectId = selectedSubjectId, questionText = q.question, answers = q.answers.map { it.answer }, correctPositions = q.correctAnswers, imageSrcText = q.imageSrc)
+                        is InputModel -> db.insertInputQuestionWithAnswers(subjectId = selectedSubjectId, questionText = q.question, answers = q.answers.map { it.answer }, imageSrcText = null)
+                        is ImageInputModel -> db.insertInputQuestionWithAnswers(subjectId = selectedSubjectId, questionText = q.question, answers = q.answers.map { it.answer }, imageSrcText = q.imageSrc)
                     }
                     createdQuestions = createdQuestions + q
                 }
@@ -208,67 +170,57 @@ fun NavAndSideBarView(
 
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
-                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
+
+                    ScreenEnum.Creator -> {
+                        val subjectQuestions = mutableListOf<GameQuestion>()
+                        subjectQuestions.addAll(db.getCardsForSubject(selectedSubjectId))
+                        subjectQuestions.addAll(db.getABCDQuestionsForSubject(selectedSubjectId))
+                        subjectQuestions.addAll(db.getABCDImageQuestionsForSubject(selectedSubjectId))
+                        subjectQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 0))
+                        subjectQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 1))
+
+                        CreatorScreenView(
+                            uiState = uiState,
+                            onAddSubject = onAddSubject,
+                            createdQuestions = subjectQuestions,
+                            onOpenForm = { form -> onSelectedChange(form) }
+                        )
+                    }
+
                     ScreenEnum.Statistics -> StatisticsScreenView()
+
                     ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
                         scope.launch {
                             when (gameType) {
-                                GameType.flashcards -> {
-                                    val cards = db.getCardsForSubject(selectedSubjectId)
-                                    controller.setQuestions(cards)
-                                }
-                                GameType.abcd -> {
-                                    val questions = db.getABCDQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
-                                }
-                                GameType.imageABCD -> {
-                                    val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
-                                }
-                                GameType.input -> {
-                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
-                                    controller.setQuestions(questions)
-                                }
-                                GameType.imageInput -> {
-                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
-                                    controller.setQuestions(questions)
-                                }
+                                GameType.flashcards -> controller.setQuestions(db.getCardsForSubject(selectedSubjectId))
+                                GameType.abcd -> controller.setQuestions(db.getABCDQuestionsForSubject(selectedSubjectId))
+                                GameType.imageABCD -> controller.setQuestions(db.getABCDImageQuestionsForSubject(selectedSubjectId))
+                                GameType.input -> controller.setQuestions(db.getInputQuestionsForSubject(selectedSubjectId, 0))
+                                GameType.imageInput -> controller.setQuestions(db.getInputQuestionsForSubject(selectedSubjectId, 1))
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
                     })
 
                     ScreenEnum.Game -> GameContainerView(controller)
-                    ScreenEnum.MultipleForm -> {
-                        MultipleChoiceForm(onAdd = { q ->
-                            onAddQuestion(q)
-                            onSelectedChange(ScreenEnum.Creator)
-                        })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
-                    ScreenEnum.InputForm -> {
-                        InputAnswerForm(onAdd = { q ->
-                            onAddQuestion(q)
-                            onSelectedChange(ScreenEnum.Creator)
-                        })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
-                    ScreenEnum.FlashcardForm -> {
-                        FlashcardForm(onAdd = { q ->
-                            onAddQuestion(q)
-                            onSelectedChange(ScreenEnum.Creator)
-                        })
-                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
-                    }
-                    ScreenEnum.PreviewAllQuestionsView -> {
-                        val allQuestions = mutableListOf<GameQuestion>()
-                        allQuestions.addAll(db.getCardsForSubject(selectedSubjectId))
-                        allQuestions.addAll(db.getABCDQuestionsForSubject(selectedSubjectId))
-                        allQuestions.addAll(db.getABCDImageQuestionsForSubject(selectedSubjectId))
-                        allQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 0))
-                        allQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 1))
 
-                        PreviewAllQuestionsView(createdQuestions = allQuestions, onBack = { onSelectedChange(ScreenEnum.Creator) })
+                    ScreenEnum.MultipleForm -> {
+                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q); onSelectedChange(ScreenEnum.Creator) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+
+                    ScreenEnum.InputForm -> {
+                        InputAnswerForm(onAdd = { q -> onAddQuestion(q); onSelectedChange(ScreenEnum.Creator) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+
+                    ScreenEnum.FlashcardForm -> {
+                        FlashcardForm(onAdd = { q -> onAddQuestion(q); onSelectedChange(ScreenEnum.Creator) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+
+                    ScreenEnum.PreviewAllQuestionsView -> {
+                        PreviewAllQuestionsView(db = db, subjectId = null, onBack = { onSelectedChange(ScreenEnum.Creator) })
                     }
                 }
             }

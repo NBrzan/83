@@ -25,14 +25,42 @@ import com.group83.a83.model.InputModel
 import com.group83.a83.model.ABCDModel
 import com.group83.a83.model.ImageABCDModel
 import com.group83.a83.model.ImageInputModel
+import com.group83.a83.cache.FullDatabase
+import com.group83.a83.view.ScreenEnum
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview(name = "Preview Questions Preview", showBackground = true)
 @Composable
 fun PreviewAllQuestionsView(
     createdQuestions: List<GameQuestion> = emptyList(),
+    db: FullDatabase? = null,
+    subjectId: Long? = null,
     onBack: () -> Unit = {}
 ) {
+    // If a database and subjectId are provided, prefer loading from DB so the view shows ALL questions
+    val displayQuestions: List<GameQuestion> = if (db != null) {
+        val all = mutableListOf<GameQuestion>()
+        if (subjectId != null) {
+            all.addAll(db.getCardsForSubject(subjectId))
+            all.addAll(db.getABCDQuestionsForSubject(subjectId))
+            all.addAll(db.getABCDImageQuestionsForSubject(subjectId))
+            all.addAll(db.getInputQuestionsForSubject(subjectId, 0))
+            all.addAll(db.getInputQuestionsForSubject(subjectId, 1))
+        } else {
+            // collect across all subjects
+            db.getAllSubjects().forEach { subj ->
+                all.addAll(db.getCardsForSubject(subj.id))
+                all.addAll(db.getABCDQuestionsForSubject(subj.id))
+                all.addAll(db.getABCDImageQuestionsForSubject(subj.id))
+                all.addAll(db.getInputQuestionsForSubject(subj.id, 0))
+                all.addAll(db.getInputQuestionsForSubject(subj.id, 1))
+            }
+        }
+        all
+    } else {
+        createdQuestions
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -41,7 +69,7 @@ fun PreviewAllQuestionsView(
             .padding(8.dp)
     ) {
         Text(
-            "Pregled vprašanj",
+            "Pregled vseh vprašanj",
             modifier = Modifier.fillMaxWidth(),
             fontSize = 22.sp,
             textAlign = TextAlign.Center,
@@ -56,15 +84,15 @@ fun PreviewAllQuestionsView(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (createdQuestions.isEmpty()) {
+        if (displayQuestions.isEmpty()) {
             Text("Ni ustvarjenih vprašanj za ta predmet.", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             return@Column
         }
 
-        Text("Created: ${createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
+        Text("Created: ${displayQuestions.size} questions", modifier = Modifier.padding(8.dp))
 
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(createdQuestions) { q ->
+            items(displayQuestions) { q ->
                 Card(modifier = Modifier
                     .fillMaxWidth()
                     .padding(6.dp)) {
