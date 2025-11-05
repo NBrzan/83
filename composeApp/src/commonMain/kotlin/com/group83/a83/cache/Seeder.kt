@@ -61,7 +61,7 @@ class DatabaseSeeder(private val db: FullDatabase) {
             db.insertABCDImageQuestionWithAnswers(
                 subject.id,
                 "What is on the picture?",
-                "https://www.bbc.co.uk/food/collections/brilliant_breads",
+                "https://wallpapers.com/images/high/bread-pictures-4lmls4s8nvsmnvmd.webp",
                 listOf("Bread", "Microwave", "Plumber", "PC"),
                 listOf(0)
             )
@@ -100,14 +100,14 @@ class DatabaseSeeder(private val db: FullDatabase) {
             db.insertInputQuestionWithAnswers(
                 subject.id,
                 "What is on the picture?",
-                "https://www.publicdomainpictures.net/view-image.php?image=165194&picture=i-soldi",
+                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F009%2F347%2F983%2Foriginal%2Fbig-pile-of-us-dollar-notes-a-lot-of-money-over-transparent-background-3d-rendering-of-bundles-of-cash-png.png&f=1&nofb=1&ipt=08f5ae4c5c0390651253a677c0649441b11e853360c14e5f0f14913e8dee11f6",
                 listOf("money", "cash", "moolah", "Money", "Cash")
             )
 
             db.insertInputQuestionWithAnswers(
                 subject.id,
                 "What is the name of this famous landmark?",
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Big_Ben_in_London_2015.jpg/800px-Big_Ben_in_London_2015.jpg",
+                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fpalace-westminster-big-ben-night-london-england-uk-50452797.jpg&f=1&nofb=1&ipt=68ea967b2caa5a41f73597448901146611f876894bcf600c631ba12c17f04c01",
                 listOf("Big Ben", "big ben")
             )
         }
