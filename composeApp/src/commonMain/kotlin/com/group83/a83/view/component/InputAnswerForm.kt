@@ -23,7 +23,9 @@ import com.group83.a83.model.ImageInputModel
 import com.group83.a83.model.GameQuestion
 import com.group83.a83.model.AnswerModel
 import androidx.compose.material3.Checkbox
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Preview
 @Composable
 fun InputAnswerForm(
     onAdd: (GameQuestion) -> Unit = {}

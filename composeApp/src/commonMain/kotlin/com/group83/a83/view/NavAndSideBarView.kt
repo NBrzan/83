@@ -29,9 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.cache.FlashCard
 import com.group83.a83.cache.FullDatabase
-import com.group83.a83.cache.InputQuestion
 import com.group83.a83.view.screens.HomeScreenView
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.GameContainerView
@@ -51,6 +49,7 @@ import com.group83.a83.view.component.InputAnswerForm
 import com.group83.a83.view.component.MultipleChoiceForm
 import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
+import com.group83.a83.view.screens.PreviewAllQuestionsView
 
 @Composable
 fun NavAndSideBarView(
@@ -75,7 +74,6 @@ fun NavAndSideBarView(
                     .safeContentPadding()
                     .padding(vertical = 8.dp)) {
 
-                    // List subjects dynamically
                     subjects.forEach { subject ->
                         DrawerItem(iconText = "•", label = subject.name) {
                             selectedSubjectId = subject.id
@@ -84,7 +82,6 @@ fun NavAndSideBarView(
                         }
                     }
 
-                    // Add new subject (simple quick action)
                     DrawerItem(iconText = "➕", label = "Add new subject") {
                         val newName = "Subject ${subjects.size + 1}"
                         db.insertSubject(newName)
@@ -146,10 +143,8 @@ fun NavAndSideBarView(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
-                        // toggle drawer using coroutine scope
                         scope.launch {
                             if (drawerState.isClosed) drawerState.open() else drawerState.close()
                         }
@@ -245,16 +240,35 @@ fun NavAndSideBarView(
 
                     ScreenEnum.Game -> GameContainerView(controller)
                     ScreenEnum.MultipleForm -> {
-                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
+                        MultipleChoiceForm(onAdd = { q ->
+                            onAddQuestion(q)
+                            onSelectedChange(ScreenEnum.Creator)
+                        })
                         Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
                     }
                     ScreenEnum.InputForm -> {
-                        InputAnswerForm(onAdd = { q -> onAddQuestion(q) })
+                        InputAnswerForm(onAdd = { q ->
+                            onAddQuestion(q)
+                            onSelectedChange(ScreenEnum.Creator)
+                        })
                         Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
                     }
                     ScreenEnum.FlashcardForm -> {
-                        FlashcardForm(onAdd = { q -> onAddQuestion(q) })
+                        FlashcardForm(onAdd = { q ->
+                            onAddQuestion(q)
+                            onSelectedChange(ScreenEnum.Creator)
+                        })
                         Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.PreviewAllQuestionsView -> {
+                        val allQuestions = mutableListOf<GameQuestion>()
+                        allQuestions.addAll(db.getCardsForSubject(selectedSubjectId))
+                        allQuestions.addAll(db.getABCDQuestionsForSubject(selectedSubjectId))
+                        allQuestions.addAll(db.getABCDImageQuestionsForSubject(selectedSubjectId))
+                        allQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 0))
+                        allQuestions.addAll(db.getInputQuestionsForSubject(selectedSubjectId, 1))
+
+                        PreviewAllQuestionsView(createdQuestions = allQuestions, onBack = { onSelectedChange(ScreenEnum.Creator) })
                     }
                 }
             }
@@ -280,6 +294,3 @@ private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = fa
         )
     }
 }
-
-
-

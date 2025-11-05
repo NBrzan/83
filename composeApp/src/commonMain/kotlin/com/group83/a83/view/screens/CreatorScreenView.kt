@@ -81,12 +81,22 @@ fun CreatorScreenView(
                 .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CreateQuestionView("Multi", "/path", onClick = { onOpenForm(ScreenEnum.MultipleForm) })
-                CreateQuestionView("Input", "/path", onClick = { onOpenForm(ScreenEnum.InputForm) })
-                CreateQuestionView("Flashcard", "/path", onClick = { onOpenForm(ScreenEnum.FlashcardForm) })
+                CreateQuestionView("Multi", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png", onClick = { onOpenForm(ScreenEnum.MultipleForm) })
+                CreateQuestionView("Flashcard", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4", onClick = { onOpenForm(ScreenEnum.FlashcardForm) })
+                CreateQuestionView("Input", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png", onClick = { onOpenForm(ScreenEnum.InputForm) })
             }
 
-            Spacer(modifier = Modifier.height(90.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // BUTTON TO OPEN PREVIEW OF CREATED QUESTIONS AND ALL QUESTIONS FOR THE SUBJECT
+            Button(
+                onClick = { onOpenForm(ScreenEnum.valueOf("PreviewAllQuestionsView")) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Preglej ustvarjena vprašanja")
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
 
             Text(
                 "Ustvari nove predmete:",
@@ -101,7 +111,7 @@ fun CreatorScreenView(
 
             OutlinedTextField(
                 value = newSubject,
-                onValueChange = { newSubject = it },
+                onValueChange = { newSubject = it.take(100) },
                 label = { Text("Ime predmeta") },
                 modifier = Modifier.fillMaxWidth()
             )
