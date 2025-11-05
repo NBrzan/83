@@ -1,20 +1,28 @@
 package com.group83.a83.view.component
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,9 +34,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ABCDView(controller: ABCDController) {
-    var selected by remember { mutableStateOf(controller.selectedIndex) }
-    var confirmed by remember { mutableStateOf(controller.confirmed) }
-    var isCorrect by remember { mutableStateOf(controller.isCorrect) }
+    val selected = controller.selectedIndex
+    val confirmed = controller.confirmed
 
     val labels = listOf("A", "B", "C", "D")
 
@@ -53,9 +60,13 @@ fun ABCDView(controller: ABCDController) {
 
         controller.question.answers.forEachIndexed { index, answer ->
             val isSelected = selected == index
+            val answerId = controller.question.answers[index].id
+            val isCorrectAnswer = confirmed && controller.question.correctAnswers.contains(answerId.toLong())
+            val isWrongSelected = confirmed && isSelected && !controller.question.correctAnswers.contains(answerId.toLong())
+
             val bgColor = when {
-                confirmed && controller.question.correctAnswers.contains(index.toLong()) -> Color(0xFFB2FF59)
-                confirmed && isSelected && isCorrect == false -> Color(0xFFFF5252)
+                isCorrectAnswer -> Color(0xFFB2FF59)
+                isWrongSelected -> Color(0xFFFF5252)
                 isSelected -> Color(0xFF80D8FF)
                 else -> Color.White
             }
@@ -67,10 +78,7 @@ fun ABCDView(controller: ABCDController) {
                     .clip(RoundedCornerShape(18.dp))
                     .background(bgColor)
                     .border(3.dp, Color.Black, RoundedCornerShape(18.dp))
-                    .clickable(enabled = !confirmed) {
-                        controller.select(index)
-                        selected = controller.selectedIndex
-                    }
+                    .clickable(enabled = !confirmed) { controller.select(index) }
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -83,8 +91,6 @@ fun ABCDView(controller: ABCDController) {
         Button(
             onClick = {
                 controller.confirm()
-                confirmed = controller.confirmed
-                isCorrect = controller.isCorrect
             },
             enabled = selected != null && !confirmed,
             shape = RoundedCornerShape(16.dp)

@@ -1,18 +1,21 @@
 package com.group83.a83.controller
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.group83.a83.AppRepositories
 import com.group83.a83.model.ImageABCDModel
 
 class ImageABCDController(val question: ImageABCDModel) {
     private val repository = AppRepositories.statsRepository
 
-    var selectedIndex: Int? = null
+    var selectedIndex by mutableStateOf<Int?>(null)
         private set
 
-    var confirmed: Boolean = false
+    var confirmed by mutableStateOf(false)
         private set
 
-    var isCorrect: Boolean? = null
+    var isCorrect by mutableStateOf<Boolean?>(null)
         private set
 
     fun select(index: Int) {
@@ -22,17 +25,22 @@ class ImageABCDController(val question: ImageABCDModel) {
     }
 
     fun confirm() {
-        if (selectedIndex != null && !confirmed) {
-            confirmed = true
-            isCorrect = question.correctAnswers.contains(selectedIndex!!.toLong())
+        val idx = selectedIndex ?: return
+        if (confirmed) return
 
-            if (isCorrect == true) {
-                repository.incrementCorrect()
-                repository.decrementUnanswered()
-            } else {
-                repository.incrementIncorrect()
-                repository.decrementUnanswered()
-            }
+        val selectedAnswerId = question.answers[idx].id
+
+        val correct = question.correctAnswers.contains(selectedAnswerId.toLong())
+
+        confirmed = true
+        isCorrect = correct
+
+        if (correct) {
+            repository.incrementCorrect()
+            repository.decrementUnanswered()
+        } else {
+            repository.incrementIncorrect()
+            repository.decrementUnanswered()
         }
     }
 

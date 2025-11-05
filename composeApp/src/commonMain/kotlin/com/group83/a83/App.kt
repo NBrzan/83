@@ -31,8 +31,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
         var uiState by remember { mutableStateOf(UiState()) }
         //db.ensureDefaultSubjectExists()
 
-        AppRepositories.statsRepository = remember { com.group83.a83.repository.StatsRepository(db) }
         db.saveStats(Stats(0, 0, 100))
+        AppRepositories.statsRepository = remember { com.group83.a83.repository.StatsRepository(db) }
         // Wire up the NavBar composable so App actually uses the remembered state
         NavAndSideBarView(
             drawerState = drawerState,

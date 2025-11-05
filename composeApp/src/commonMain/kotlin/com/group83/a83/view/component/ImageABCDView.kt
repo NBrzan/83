@@ -29,10 +29,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ImageABCDView(controller: ImageABCDController) {
-    // Local UI mirrors controller state (update after controller calls)
-    var selected by remember { mutableStateOf(controller.selectedIndex) }
-    var confirmed by remember { mutableStateOf(controller.confirmed) }
-    var isCorrect by remember { mutableStateOf(controller.isCorrect) }
+    val selected = controller.selectedIndex
+    val confirmed = controller.confirmed
 
     val labels = listOf("A", "B", "C", "D")
 
@@ -63,56 +61,31 @@ fun ImageABCDView(controller: ImageABCDController) {
 
         controller.question.answers.forEachIndexed { index, answer ->
             val isSelected = selected == index
+            val answerId = controller.question.answers[index].id
+            val isCorrectAnswer = confirmed && controller.question.correctAnswers.contains(answerId.toLong())
+            val isWrongSelected = confirmed && isSelected && !controller.question.correctAnswers.contains(answerId.toLong())
 
             val bgColor = when {
-                confirmed && controller.question.correctAnswers.contains(index.toLong()) -> Color(0xFFB2FF59)
-                confirmed && isSelected && isCorrect == false -> Color(0xFFFF5252)
+                isCorrectAnswer -> Color(0xFFB2FF59)
+                isWrongSelected -> Color(0xFFFF5252)
                 isSelected -> Color(0xFF80D8FF)
-                else -> Color(0xFFF6F6F6)
+                else -> Color.White
             }
-
-            val scale by animateFloatAsState(
-                targetValue = if (isSelected) 1.05f else 1f
-            )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
-                    .graphicsLayer(scaleX = scale, scaleY = scale)
                     .clip(RoundedCornerShape(18.dp))
                     .background(bgColor)
                     .border(3.dp, Color.Black, RoundedCornerShape(18.dp))
                     .clickable(enabled = !confirmed) {
                         controller.select(index)
-                        selected = controller.selectedIndex
                     }
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.8f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = labels[index],
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = Color.Black
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    text = answer.answer,
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium
-                )
+                Text("${labels[index]}. ${answer.answer}", fontSize = 20.sp)
             }
         }
 
@@ -121,8 +94,6 @@ fun ImageABCDView(controller: ImageABCDController) {
         Button(
             onClick = {
                 controller.confirm()
-                confirmed = controller.confirmed
-                isCorrect = controller.isCorrect
             },
             enabled = selected != null && !confirmed,
             shape = RoundedCornerShape(16.dp)
