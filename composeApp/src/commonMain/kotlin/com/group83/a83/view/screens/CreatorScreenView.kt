@@ -88,12 +88,17 @@ fun CreatorScreenView(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // BUTTON TO OPEN PREVIEW OF CREATED QUESTIONS AND ALL QUESTIONS FOR THE SUBJECT
             Button(
                 onClick = { onOpenForm(ScreenEnum.valueOf("PreviewAllQuestionsView")) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Preglej ustvarjena vprašanja")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (createdQuestions.isNotEmpty()) {
+                Text("Ustvaril: ${createdQuestions.size} vprašanj", modifier = Modifier.padding(8.dp))
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -111,7 +116,7 @@ fun CreatorScreenView(
 
             OutlinedTextField(
                 value = newSubject,
-                onValueChange = { newSubject = it.take(100) },
+                onValueChange = { newSubject = it.take(60) },
                 label = { Text("Ime predmeta") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -155,21 +160,6 @@ fun CreatorScreenView(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Dodaj predmet")
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            if (createdQuestions.isNotEmpty()) {
-                Text("Created: ${createdQuestions.size} questions", modifier = Modifier.padding(8.dp))
-                createdQuestions.forEach { q ->
-                    when (q) {
-                        is ABCDModel -> Text("MC: ${q.question}")
-                        is InputModel -> Text("Input: ${q.question}")
-                        is FlashcardModel -> Text("Flash: ${q.front}")
-                        is ImageABCDModel -> Text("Image MC: ${q.question}")
-                        is ImageInputModel -> Text("Image Input: ${q.question}")
-                    }
-                }
             }
         }
     }
