@@ -34,6 +34,11 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         dbQuery.removeAllCards()
     }
 
+    // Delete a single flashcard by id
+    internal fun deleteFlashcardById(cardId: Long) {
+        dbQuery.deleteCardById(cardId)
+    }
+
     private fun mapFlashCard(
         id: Long,
         front: String,
@@ -132,6 +137,14 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
+    // Delete normal ABCD question (answers then question)
+    internal fun deleteAbcdQuestionById(questionId: Long) {
+        dbQuery.transaction {
+            dbQuery.deleteAbcdAnswersByQuestion(questionId, 0L)
+            dbQuery.deleteAbcdQuestionById(questionId)
+        }
+    }
+
     private fun ensureDefaultInputImageExistsForSubject(id: Long) {
         val inputQuestions = getInputQuestionsForSubject(id, 1)
         if (inputQuestions.isEmpty()) {
@@ -182,6 +195,14 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
+    // Delete ABCD image question (answers then image question)
+    internal fun deleteAbcdImageQuestionById(questionId: Long) {
+        dbQuery.transaction {
+            dbQuery.deleteAbcdAnswersByQuestion(questionId, 1L)
+            dbQuery.deleteAbcdImageQuestionById(questionId)
+        }
+    }
+
     internal fun getABCDImageQuestionsForSubject(subjectId: Long): List<ImageABCDModel> {
         val result = mutableListOf<ImageABCDModel>()
         dbQuery.selectABCDImageQuestionsBySubject(subjectId) { qId, question, image_src ->
@@ -216,6 +237,14 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
             answers.forEach { ans ->
                 inputQueries.insertInputAnswer(qId, ans)
             }
+        }
+    }
+
+    // Delete input question (answers then question)
+    internal fun deleteInputQuestionById(questionId: Long) {
+        inputQueries.transaction {
+            inputQueries.deleteInputAnswersByQuestion(questionId)
+            inputQueries.deleteInputQuestionById(questionId)
         }
     }
 
@@ -269,6 +298,50 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
                 unanswered = unanswered.toInt()
             )
         }.executeAsOneOrNull() ?: Stats(0, 0, 0)
+    }
+
+    /**
+     * Delete all question types for a subject (flashcards, abcd, abcd-image, input)
+     * This iterates over stored questions for the subject and deletes each one using the
+     * per-item delete methods above. It intentionally uses the existing per-item delete
+     * operations to avoid adding new SQL for "delete by subject".
+     */
+    internal fun deleteAllQuestionsForSubject(subjectId: Long) {
+        // Delete flashcards
+        val cards = getCardsForSubject(subjectId)
+        cards.forEach { c ->
+            deleteFlashcardById(c.id.toLong())
+        }
+
+        // Delete ABCD questions
+        val abcd = getABCDQuestionsForSubject(subjectId)
+        abcd.forEach { q ->
+            deleteAbcdQuestionById(q.id.toLong())
+        }
+
+        // Delete ABCD image questions
+        val abcdImg = getABCDImageQuestionsForSubject(subjectId)
+        abcdImg.forEach { q ->
+            deleteAbcdImageQuestionById(q.id.toLong())
+        }
+
+        // Delete input and image-input questions
+        val inputNormal = getInputQuestionsForSubject(subjectId, 0)
+        inputNormal.forEach { q ->
+            if (q is InputModel) deleteInputQuestionById(q.id.toLong())
+        }
+        val inputImage = getInputQuestionsForSubject(subjectId, 1)
+        inputImage.forEach { q ->
+            if (q is ImageInputModel) deleteInputQuestionById(q.id.toLong())
+        }
+    }
+
+    // Delete all questions across all subjects
+    internal fun deleteAllQuestions() {
+        val subjects = getAllSubjects()
+        subjects.forEach { subj ->
+            deleteAllQuestionsForSubject(subj.id)
+        }
     }
 }
 

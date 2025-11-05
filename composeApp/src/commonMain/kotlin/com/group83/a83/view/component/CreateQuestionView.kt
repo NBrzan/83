@@ -5,15 +5,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.skydoves.landscapist.coil3.CoilImage
 
 @Composable
 fun CreateQuestionView(
@@ -27,15 +31,13 @@ fun CreateQuestionView(
         .clickable { onClick() }
     ) {
         Text(text, modifier = Modifier.padding(4.dp))
-        Box(
+        CoilImage(
+            imageModel = { imagePath },
             modifier = Modifier
-                .padding(2.dp)
                 .size(100.dp)
                 .defaultMinSize(120.dp, 120.dp)
-                .border(width = 1.dp, color = Color.LightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(imagePath, modifier = Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        }
+                .padding(15.dp)
+                .clip(RoundedCornerShape(8.dp))
+        )
     }
 }

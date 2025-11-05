@@ -44,6 +44,10 @@ SELECT id, name FROM Subject ORDER BY id DESC;
 removeAllCards:
 DELETE FROM FlashCard;
 
+-- delete a single flashcard by id
+deleteCardById:
+DELETE FROM FlashCard WHERE id = ?;
+
 CREATE TABLE ABCDQuestion(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   subject_id INTEGER NOT NULL DEFAULT 1,
@@ -81,6 +85,14 @@ SELECT id, answer, is_correct FROM ABCDAnswer WHERE question_id = ? AND question
 selectCorrectAbcdAnswersIdsByQuestion:
 SELECT id FROM ABCDAnswer WHERE question_id = ? AND question_type = ? AND is_correct = 1;
 
+-- delete ABCD answers for a question (by question id and type)
+deleteAbcdAnswersByQuestion:
+DELETE FROM ABCDAnswer WHERE question_id = ? AND question_type = ?;
+
+-- delete an ABCD question by id
+deleteAbcdQuestionById:
+DELETE FROM ABCDQuestion WHERE id = ?;
+
 CREATE TABLE ABCDImageQuestion(
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   subject_id INTEGER NOT NULL DEFAULT 1,
@@ -95,6 +107,9 @@ VALUES (?, ?, ?);
 selectABCDImageQuestionsBySubject:
 SELECT id, question, image_src FROM ABCDImageQuestion WHERE subject_id = ? ORDER BY id DESC;
 
+-- delete an ABCD image question by id
+deleteAbcdImageQuestionById:
+DELETE FROM ABCDImageQuestion WHERE id = ?;
 
 selectLatestABCDImageQuestionId:
 SELECT id FROM ABCDImageQuestion ORDER BY id DESC LIMIT 1;
