@@ -1,4 +1,3 @@
-
 CREATE TABLE InputQuestion (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   question_type INTEGER NOT NULL DEFAULT 0, -- 0 = input, 1 = imageInput
@@ -41,6 +40,14 @@ VALUES (?, ?);
 selectAnswersForInputQuestion:
 SELECT id, answer FROM InputAnswer
 WHERE input_question_id = ?;
+
+-- delete all answers for an input question
+deleteInputAnswersByQuestion:
+DELETE FROM InputAnswer WHERE input_question_id = ?;
+
+-- delete an input question by id
+deleteInputQuestionById:
+DELETE FROM InputQuestion WHERE id = ?;
 
 selectAllInputQuestionsByType:
 SELECT id, question_type, question, image_src, subject_id FROM InputQuestion
