@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,16 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.cache.FlashCard
 import com.group83.a83.cache.FullDatabase
-import com.group83.a83.cache.InputQuestion
-import com.group83.a83.view.screens.HomeScreenView
-import com.group83.a83.view.screens.CreatorScreenView
-import com.group83.a83.view.screens.GameContainerView
-import com.group83.a83.view.screens.StatisticsScreenView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import com.group83.a83.controller.GameContainerController
+import com.group83.a83.controller.StatsController
 import com.group83.a83.model.ABCDModel
 import com.group83.a83.model.FlashcardModel
 import com.group83.a83.model.GameQuestion
@@ -49,8 +42,14 @@ import com.group83.a83.model.InputModel
 import com.group83.a83.view.component.FlashcardForm
 import com.group83.a83.view.component.InputAnswerForm
 import com.group83.a83.view.component.MultipleChoiceForm
+import com.group83.a83.view.screens.CreatorScreenView
+import com.group83.a83.view.screens.GameContainerView
 import com.group83.a83.view.screens.GameSelectView
+import com.group83.a83.view.screens.HomeScreenView
+import com.group83.a83.view.screens.StatsScreen
 import com.group83.a83.view.screens.UiState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun NavAndSideBarView(
@@ -58,13 +57,13 @@ fun NavAndSideBarView(
     selected: ScreenEnum,
     onSelectedChange: (ScreenEnum) -> Unit,
     scope: CoroutineScope,
-    controller: GameContainerController,
     db: FullDatabase,
     uiState: UiState
 ) {
     var subjects by remember { mutableStateOf(db.getAllSubjects()) }
     var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
     var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
+    var selectedQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -141,8 +140,7 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .safeContentPadding(),
+                    .padding(innerPadding),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -214,36 +212,36 @@ fun NavAndSideBarView(
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
                     ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
-                    ScreenEnum.Statistics -> StatisticsScreenView()
+                    ScreenEnum.Statistics -> StatsScreen(StatsController())
                     ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
                         scope.launch {
                             when (gameType) {
                                 GameType.flashcards -> {
                                     val cards = db.getCardsForSubject(selectedSubjectId)
-                                    controller.setQuestions(cards)
+                                    selectedQuestions = cards
                                 }
                                 GameType.abcd -> {
                                     val questions = db.getABCDQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.imageABCD -> {
                                     val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.input -> {
                                     val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.imageInput -> {
                                     val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
                     })
 
-                    ScreenEnum.Game -> GameContainerView(controller)
+                    ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))
                     ScreenEnum.MultipleForm -> {
                         MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
                         Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
@@ -280,6 +278,3 @@ private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = fa
         )
     }
 }
-
-
-

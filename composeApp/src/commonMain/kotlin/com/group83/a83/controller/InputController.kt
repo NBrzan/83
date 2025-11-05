@@ -1,12 +1,18 @@
 package com.group83.a83.controller
 
+import com.group83.a83.AppRepositories
 import com.group83.a83.model.InputModel
 
 class InputController(val question: InputModel) {
+
+    private val repository = AppRepositories.statsRepository
+
     var input: String = ""
         private set
+
     var confirmed: Boolean = false
         private set
+
     var isCorrect: Boolean? = null
         private set
 
@@ -19,8 +25,20 @@ class InputController(val question: InputModel) {
     fun confirm() {
         if (!confirmed) {
             val normalized = input.trim().lowercase()
-            isCorrect = question.answers.any { it.answer.trim().lowercase() == normalized }
+            val isAnswerCorrect = question.answers.any {
+                it.answer.trim().lowercase() == normalized
+            }
+
+            isCorrect = isAnswerCorrect
             confirmed = true
+
+            if (isAnswerCorrect) {
+                repository.incrementCorrect()
+                repository.decrementUnanswered()
+            } else {
+                repository.incrementIncorrect()
+                repository.decrementUnanswered()
+            }
         }
     }
 
@@ -30,4 +48,3 @@ class InputController(val question: InputModel) {
         isCorrect = null
     }
 }
-

@@ -12,10 +12,11 @@ import androidx.compose.runtime.Composable
 import com.group83.a83.cache.DatabaseDriverFactory
 import com.group83.a83.cache.FullDatabase
 import com.group83.a83.controller.GameContainerController
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.group83.a83.model.Stats
 import com.group83.a83.view.NavAndSideBarView
 import com.group83.a83.view.ScreenEnum
 import com.group83.a83.view.screens.UiState
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
@@ -26,22 +27,20 @@ fun App(driverFactory: DatabaseDriverFactory) {
         val scope = rememberCoroutineScope()
 
         val db = remember { FullDatabase(driverFactory) }
-        val controller = remember { GameContainerController() }
 
         var uiState by remember { mutableStateOf(UiState()) }
         //db.ensureDefaultSubjectExists()
 
+        db.saveStats(Stats(0, 0, 100))
+        AppRepositories.statsRepository = remember { com.group83.a83.repository.StatsRepository(db) }
         // Wire up the NavBar composable so App actually uses the remembered state
         NavAndSideBarView(
             drawerState = drawerState,
             selected = selected,
             onSelectedChange = { selected = it },
             scope = scope,
-            controller = controller,
             db = db,
             uiState = uiState
         )
-
-
     }
 }
