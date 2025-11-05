@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
@@ -23,8 +25,8 @@ import com.group83.a83.model.ABCDModel
 import com.group83.a83.model.ImageABCDModel
 import com.group83.a83.model.GameQuestion
 import com.group83.a83.model.AnswerModel
-import androidx.compose.material3.Checkbox
 import androidx.compose.ui.Alignment
+import com.skydoves.landscapist.coil3.CoilImage
 
 @Composable
 fun MultipleChoiceForm(
@@ -35,6 +37,7 @@ fun MultipleChoiceForm(
     var correct by remember { mutableStateOf(listOf(false, false, false, false)) }
     var includeImage by remember { mutableStateOf(false) }
     var imageSrc by remember { mutableStateOf("") }
+    var showPreview by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
         OutlinedTextField(
@@ -71,7 +74,21 @@ fun MultipleChoiceForm(
 
         if (includeImage) {
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = imageSrc, onValueChange = { imageSrc = it }, label = { Text("Image URL or path") }, modifier = Modifier.fillMaxWidth())
+            // Allow URL input
+            OutlinedTextField(value = imageSrc, onValueChange = { imageSrc = it }, label = { Text("Image URL (or leave blank to pick from gallery)") }, modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(8.dp))
+            // Image picker button - platform-specific actual implementation
+            ImagePickerButton(onImagePicked = { uri -> imageSrc = uri })
+
+            if (imageSrc.isNotBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                CoilImage(
+                    imageModel = { imageSrc },
+                    modifier = Modifier
+                        .size(160.dp)
+                        .clickable { showPreview = true }
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -98,5 +115,9 @@ fun MultipleChoiceForm(
         }, enabled = question.isNotBlank() && (!includeImage || imageSrc.isNotBlank())) {
             Text("Add Multiple Choice")
         }
+    }
+
+    if (showPreview) {
+        FullScreenImagePreview(imageSrc = imageSrc) { showPreview = false }
     }
 }

@@ -2,6 +2,7 @@ package com.group83.a83.view.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +29,6 @@ import com.group83.a83.model.ABCDModel
 import com.group83.a83.model.ImageABCDModel
 import com.group83.a83.model.ImageInputModel
 import com.group83.a83.cache.FullDatabase
-import com.group83.a83.view.ScreenEnum
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview(name = "Preview Questions Preview", showBackground = true)
@@ -37,8 +39,8 @@ fun PreviewAllQuestionsView(
     subjectId: Long? = null,
     onBack: () -> Unit = {}
 ) {
-    // If a database and subjectId are provided, prefer loading from DB so the view shows ALL questions
-    val displayQuestions: List<GameQuestion> = if (db != null) {
+    // Build initial list from DB or provided list
+    val initialQuestions: List<GameQuestion> = if (db != null) {
         val all = mutableListOf<GameQuestion>()
         if (subjectId != null) {
             all.addAll(db.getCardsForSubject(subjectId))
@@ -60,6 +62,9 @@ fun PreviewAllQuestionsView(
     } else {
         createdQuestions
     }
+
+    // Remember a mutable state list so deletes update the UI immediately
+    val displayQuestions = remember { mutableStateListOf<GameQuestion>().apply { addAll(initialQuestions) } }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,14 +109,47 @@ fun PreviewAllQuestionsView(
                                     val prefix = if (q.correctAnswers.contains(idx.toLong())) "*" else " "
                                     Text("$prefix ${a.answer}")
                                 }
+                                if (db != null) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Button(onClick = {
+                                            db.deleteAbcdQuestionById(q.id.toLong())
+                                            displayQuestions.remove(q)
+                                        }) {
+                                            Text("Delete")
+                                        }
+                                    }
+                                }
                             }
                             is InputModel -> {
                                 Text("Input: ${q.question}")
                                 q.answers.forEach { a -> Text("- ${a.answer}") }
+                                if (db != null) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Button(onClick = {
+                                            db.deleteInputQuestionById(q.id.toLong())
+                                            displayQuestions.remove(q)
+                                        }) {
+                                            Text("Delete")
+                                        }
+                                    }
+                                }
                             }
                             is FlashcardModel -> {
                                 Text("Flashcard: ${q.front}")
                                 Text("-> ${q.back}")
+                                if (db != null) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Button(onClick = {
+                                            db.deleteFlashcardById(q.id.toLong())
+                                            displayQuestions.remove(q)
+                                        }) {
+                                            Text("Delete")
+                                        }
+                                    }
+                                }
                             }
                             is ImageABCDModel -> {
                                 Text("Image MC: ${q.question}")
@@ -119,10 +157,32 @@ fun PreviewAllQuestionsView(
                                     val prefix = if (q.correctAnswers.contains(idx.toLong())) "*" else " "
                                     Text("$prefix ${a.answer}")
                                 }
+                                if (db != null) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Button(onClick = {
+                                            db.deleteAbcdImageQuestionById(q.id.toLong())
+                                            displayQuestions.remove(q)
+                                        }) {
+                                            Text("Delete")
+                                        }
+                                    }
+                                }
                             }
                             is ImageInputModel -> {
                                 Text("Image Input: ${q.question}")
                                 q.answers.forEach { a -> Text("- ${a.answer}") }
+                                if (db != null) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Button(onClick = {
+                                            db.deleteInputQuestionById(q.id.toLong())
+                                            displayQuestions.remove(q)
+                                        }) {
+                                            Text("Delete")
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

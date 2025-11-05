@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import com.group83.a83.model.GameQuestion
 import com.group83.a83.model.AnswerModel
 import androidx.compose.material3.Checkbox
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.skydoves.landscapist.coil3.CoilImage
 
 @Preview
 @Composable
@@ -35,6 +38,7 @@ fun InputAnswerForm(
     var answers by remember { mutableStateOf(listOf<String>()) }
     var includeImage by remember { mutableStateOf(false) }
     var imageSrc by remember { mutableStateOf("") }
+    var showPreview by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
         OutlinedTextField(value = question, onValueChange = { question = it }, label = { Text("Question") }, modifier = Modifier.fillMaxWidth())
@@ -67,7 +71,19 @@ fun InputAnswerForm(
 
         if (includeImage) {
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = imageSrc, onValueChange = { imageSrc = it }, label = { Text("Image URL or path") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = imageSrc, onValueChange = { imageSrc = it }, label = { Text("Image URL (or leave blank to pick from gallery)") }, modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(8.dp))
+            ImagePickerButton(onImagePicked = { uri -> imageSrc = uri })
+
+            if (imageSrc.isNotBlank()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                CoilImage(
+                    imageModel = { imageSrc },
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clickable { showPreview = true }
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -89,5 +105,9 @@ fun InputAnswerForm(
         }, enabled = question.isNotBlank() && answers.isNotEmpty() && (!includeImage || imageSrc.isNotBlank())) {
             Text("Add Input Question")
         }
+    }
+
+    if (showPreview) {
+        FullScreenImagePreview(imageSrc = imageSrc) { showPreview = false }
     }
 }
