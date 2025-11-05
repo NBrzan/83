@@ -19,10 +19,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val driver = AndroidDatabaseDriverFactory(this)
 
-        // Initialize and install bundled JSON defaults into the app files directory
-        ResourceInstaller.init(this)
-        ResourceInstaller.installDefaultsIfNeeded()
-
         setContent {
             App(driver)
         }

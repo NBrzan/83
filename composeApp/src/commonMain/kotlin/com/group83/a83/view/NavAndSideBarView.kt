@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
@@ -23,20 +25,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.view.screens.HomeScreenView
+import com.group83.a83.cache.FullDatabase
+import com.group83.a83.controller.GameContainerController
+import com.group83.a83.controller.StatsController
+import com.group83.a83.model.ABCDModel
+import com.group83.a83.model.FlashcardModel
+import com.group83.a83.model.GameQuestion
+import com.group83.a83.model.GameType
+import com.group83.a83.model.ImageABCDModel
+import com.group83.a83.model.ImageInputModel
+import com.group83.a83.model.InputModel
+import com.group83.a83.view.component.FlashcardForm
+import com.group83.a83.view.component.InputAnswerForm
+import com.group83.a83.view.component.MultipleChoiceForm
 import com.group83.a83.view.screens.CreatorScreenView
 import com.group83.a83.view.screens.GameContainerView
 import com.group83.a83.view.screens.GameSelectView
+import com.group83.a83.view.screens.HomeScreenView
+import com.group83.a83.view.screens.StatsScreen
+import com.group83.a83.view.screens.UiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import com.group83.a83.controller.GameContainerController
-import com.group83.a83.cache.FullDatabase
-import com.group83.a83.controller.StatsController
-import com.group83.a83.model.GameType
-import com.group83.a83.view.screens.StatsScreen
 
 @Composable
 fun NavAndSideBarView(
@@ -45,10 +58,12 @@ fun NavAndSideBarView(
     onSelectedChange: (ScreenEnum) -> Unit,
     scope: CoroutineScope,
     controller: GameContainerController,
-    db: FullDatabase
+    db: FullDatabase,
+    uiState: UiState
 ) {
     var subjects by remember { mutableStateOf(db.getAllSubjects()) }
     var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
+    var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -141,9 +156,62 @@ fun NavAndSideBarView(
                     }
                 }
 
+                val onAddQuestion: (GameQuestion) -> Unit = { q ->
+                    when (q) {
+                        is FlashcardModel -> {
+                            db.insertCardWithSubject(
+                                subjectId = selectedSubjectId,
+                                front = q.front,
+                                back = q.back
+                            )
+                        }
+                        is ABCDModel -> {
+                            db.insertABCDQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                correctPositions = q.correctAnswers
+                            )
+                        }
+                        is ImageABCDModel -> {
+                            db.insertABCDImageQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                correctPositions = q.correctAnswers,
+                                imageSrcText = q.imageSrc
+                            )
+                        }
+                        is InputModel -> {
+                            db.insertInputQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                imageSrcText = null
+                            )
+                        }
+                        is ImageInputModel -> {
+                            db.insertInputQuestionWithAnswers(
+                                subjectId = selectedSubjectId,
+                                questionText = q.question,
+                                answers = q.answers.map { it.answer },
+                                imageSrcText = q.imageSrc
+                            )
+                        }
+                    }
+                    createdQuestions = createdQuestions + q
+                }
+
+                val onAddSubject: (String, String) -> Unit = { newSubject, emoji ->
+                    val trimmed = newSubject.trim()
+                    val chosenEmoji = emoji.ifBlank { "📚" }
+                    db.insertUniqueSubject("$chosenEmoji $trimmed")
+                    subjects = db.getAllSubjects()
+                }
+
                 when (selected) {
                     ScreenEnum.Home -> HomeScreenView()
-                    ScreenEnum.Creator -> CreatorScreenView()
+                    ScreenEnum.Creator -> CreatorScreenView(uiState = uiState, onAddSubject = onAddSubject, createdQuestions = createdQuestions, onOpenForm = { form -> onSelectedChange(form) })
                     ScreenEnum.Statistics -> StatsScreen(StatsController())
                     ScreenEnum.GameSelect -> GameSelectView(onGameSelected = { gameType: GameType ->
                         scope.launch {
@@ -160,14 +228,32 @@ fun NavAndSideBarView(
                                     val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
                                     controller.setQuestions(questions)
                                 }
-                                else -> {
-                                    // TODO: load other game types
+                                GameType.input -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
+                                    controller.setQuestions(questions)
+                                }
+                                GameType.imageInput -> {
+                                    val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
+                                    controller.setQuestions(questions)
                                 }
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
                     })
+
                     ScreenEnum.Game -> GameContainerView(controller)
+                    ScreenEnum.MultipleForm -> {
+                        MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.InputForm -> {
+                        InputAnswerForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
+                    ScreenEnum.FlashcardForm -> {
+                        FlashcardForm(onAdd = { q -> onAddQuestion(q) })
+                        Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }
+                    }
                 }
             }
         }
@@ -175,7 +261,7 @@ fun NavAndSideBarView(
 }
 
 @Composable
-private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
+private fun DrawerItem(iconText: String, label: String, isSelected: Boolean = false, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -185,6 +271,10 @@ private fun DrawerItem(iconText: String, label: String, onClick: () -> Unit) {
     ) {
         Text(iconText, fontSize = 20.sp)
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(12.dp))
-        Text(label)
+        Text(
+            text = label,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        )
     }
 }

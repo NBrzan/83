@@ -15,7 +15,10 @@ import com.group83.a83.controller.GameContainerController
 import com.group83.a83.model.Stats
 import com.group83.a83.view.NavAndSideBarView
 import com.group83.a83.view.ScreenEnum
+import com.group83.a83.view.screens.UiState
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Preview(name = "App preview", showBackground = true)
 @Composable
 fun App(driverFactory: DatabaseDriverFactory) {
     MaterialTheme {
@@ -26,6 +29,9 @@ fun App(driverFactory: DatabaseDriverFactory) {
         val db = remember { FullDatabase(driverFactory) }
         val controller = remember { GameContainerController() }
 
+        var uiState by remember { mutableStateOf(UiState()) }
+        //db.ensureDefaultSubjectExists()
+
         AppRepositories.statsRepository = remember { com.group83.a83.repository.StatsRepository(db) }
         db.saveStats(Stats(0, 0, 100))
         // Wire up the NavBar composable so App actually uses the remembered state
@@ -35,7 +41,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
             onSelectedChange = { selected = it },
             scope = scope,
             controller = controller,
-            db = db
+            db = db,
+            uiState = uiState
         )
     }
 }

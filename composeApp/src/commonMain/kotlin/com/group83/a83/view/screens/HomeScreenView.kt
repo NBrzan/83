@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.group83.a83.view.screens.UiState
 
 @Composable
 fun HomeScreenView(
     uiState: UiState = UiState()
 ) {
+    val selected = uiState.subjects.find { it.name == uiState.currentSelectedSubject }
+    val emoji = selected?.emoji ?: "📚"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -24,7 +26,7 @@ fun HomeScreenView(
         if (uiState.isLoading) {
             Text("Loading...", style = MaterialTheme.typography.bodyLarge)
         } else {
-            Text("Subject: ${uiState.subjectName}", style = MaterialTheme.typography.headlineSmall)
+            Text("${emoji} ${uiState.currentSelectedSubject}", style = MaterialTheme.typography.headlineSmall)
             Text("Flashcards: ${uiState.flashcardCount}", modifier = Modifier.padding(top = 8.dp))
         }
     }
