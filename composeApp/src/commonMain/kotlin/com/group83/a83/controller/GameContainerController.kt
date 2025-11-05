@@ -1,14 +1,18 @@
 package com.group83.a83.controller
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.group83.a83.model.GameQuestion
 
-class GameContainerController {
-    private var questions = listOf<GameQuestion>()
-    var index = 0
+class GameContainerController(private var questions: List<GameQuestion>) {
+    var index by mutableStateOf(0)
+        private set
+
+    fun getCurrentQuestion(): GameQuestion? =
+        questions.getOrNull(index)
 
     fun getListLength() = questions.lastIndex
-
-    fun getCurrentQuestion() = questions.getOrNull(index)
 
     fun setQuestions(questions: List<GameQuestion>) {
         this.questions = questions
@@ -16,10 +20,14 @@ class GameContainerController {
 
 
     fun next() {
-        if (index < questions.lastIndex) index++
+        if (index < questions.lastIndex) {
+            index++
+        }
     }
 
     fun previous() {
-        if (index > 0) index--
+        if (index > 0) {
+            index--
+        }
     }
 }

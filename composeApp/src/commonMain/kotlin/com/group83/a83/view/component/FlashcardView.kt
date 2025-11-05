@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -35,16 +36,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun FlashcardView(controller: FlashcardController) {
-    var flipped by remember { mutableStateOf(controller.isFront) }
-
     val rotation by animateFloatAsState(
-        targetValue = if (flipped) 0f else 180f,
+        targetValue = if (!controller.isFront) 0f else 180f,
         animationSpec = tween(durationMillis = 500)
     )
 
     val isFrontVisible = rotation <= 90f
 
-    val cardColor = if (flipped) Color(0xFFFFF2A7) else Color(0xFFA7E6FF)
+    val cardColor = if (!controller.isFront) Color(0xFFFFF2A7) else Color(0xFFA7E6FF)
 
     Box(
         modifier = Modifier
@@ -58,7 +57,6 @@ fun FlashcardView(controller: FlashcardController) {
             .background(cardColor)
             .clickable {
                 controller.flip()
-                flipped = controller.isFront
             }
             .border(
                 width = 4.dp,

@@ -20,9 +20,13 @@ import com.group83.a83.view.component.ImageInputView
 import com.group83.a83.view.component.InputView
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -40,12 +44,14 @@ fun GameContainerView(controller: GameContainerController) {
         contentAlignment = Alignment.Center
     ) {
         Column {
-            when (question) {
-                is FlashcardModel -> FlashcardView(FlashcardController(question))
-                is ABCDModel -> ABCDView(ABCDController(question))
-                is ImageABCDModel -> ImageABCDView(ImageABCDController(question))
-                is ImageInputModel -> ImageInputView(ImageInputController(question))
-                is InputModel -> InputView(InputController(question))
+            key(controller.index) {
+                when (question) {
+                    is FlashcardModel -> FlashcardView(FlashcardController(question))
+                    is ABCDModel -> ABCDView(ABCDController(question))
+                    is ImageABCDModel -> ImageABCDView(ImageABCDController(question))
+                    is ImageInputModel -> ImageInputView(ImageInputController(question))
+                    is InputModel -> InputView(InputController(question))
+                }
             }
         }
         Row(
@@ -79,7 +85,7 @@ fun GameContainerPreview() {
         )
     )
 
-    val controller = GameContainerController()
+    val controller = GameContainerController(questions)
     controller.setQuestions(questions)
     GameContainerView(controller)
 }

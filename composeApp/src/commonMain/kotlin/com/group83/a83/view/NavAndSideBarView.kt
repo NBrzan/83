@@ -57,13 +57,13 @@ fun NavAndSideBarView(
     selected: ScreenEnum,
     onSelectedChange: (ScreenEnum) -> Unit,
     scope: CoroutineScope,
-    controller: GameContainerController,
     db: FullDatabase,
     uiState: UiState
 ) {
     var subjects by remember { mutableStateOf(db.getAllSubjects()) }
     var selectedSubjectId by remember { mutableStateOf(subjects.firstOrNull()?.id ?: 1) }
     var createdQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
+    var selectedQuestions by remember { mutableStateOf(listOf<GameQuestion>()) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -218,30 +218,30 @@ fun NavAndSideBarView(
                             when (gameType) {
                                 GameType.flashcards -> {
                                     val cards = db.getCardsForSubject(selectedSubjectId)
-                                    controller.setQuestions(cards)
+                                    selectedQuestions = cards
                                 }
                                 GameType.abcd -> {
                                     val questions = db.getABCDQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.imageABCD -> {
                                     val questions = db.getABCDImageQuestionsForSubject(selectedSubjectId)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.input -> {
                                     val questions = db.getInputQuestionsForSubject(selectedSubjectId, 0)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                                 GameType.imageInput -> {
                                     val questions = db.getInputQuestionsForSubject(selectedSubjectId, 1)
-                                    controller.setQuestions(questions)
+                                    selectedQuestions = questions
                                 }
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
                     })
 
-                    ScreenEnum.Game -> GameContainerView(controller)
+                    ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))
                     ScreenEnum.MultipleForm -> {
                         MultipleChoiceForm(onAdd = { q -> onAddQuestion(q) })
                         Button(onClick = { onSelectedChange(ScreenEnum.Creator) }) { Text("Back") }

@@ -27,7 +27,6 @@ fun App(driverFactory: DatabaseDriverFactory) {
         val scope = rememberCoroutineScope()
 
         val db = remember { FullDatabase(driverFactory) }
-        val controller = remember { GameContainerController() }
 
         var uiState by remember { mutableStateOf(UiState()) }
         //db.ensureDefaultSubjectExists()
@@ -40,7 +39,6 @@ fun App(driverFactory: DatabaseDriverFactory) {
             selected = selected,
             onSelectedChange = { selected = it },
             scope = scope,
-            controller = controller,
             db = db,
             uiState = uiState
         )

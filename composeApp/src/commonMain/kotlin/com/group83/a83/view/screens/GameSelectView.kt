@@ -90,10 +90,6 @@ fun GameSelectView(
             }
 
             Spacer(modifier = Modifier.height(70.dp))
-
-
-
-
         }
     }
 }
