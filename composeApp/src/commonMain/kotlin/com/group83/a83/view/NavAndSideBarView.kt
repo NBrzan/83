@@ -50,7 +50,6 @@ import com.group83.a83.view.component.MultipleChoiceForm
 import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.PreviewAllQuestionsView
-import kotlinx.coroutines.launch
 import com.group83.a83.view.screens.StatsScreen
 
 @Composable
@@ -129,11 +128,11 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .safeContentPadding(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
                         scope.launch { if (drawerState.isClosed) drawerState.open() else drawerState.close() }
