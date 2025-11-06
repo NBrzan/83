@@ -237,6 +237,43 @@ class DatabaseSeeder(private val db: FullDatabase) {
                 "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fpalace-westminster-big-ben-night-london-england-uk-50452797.jpg&f=1&nofb=1&ipt=68ea967b2caa5a41f73597448901146611f876894bcf600c631ba12c17f04c01",
                 listOf("Big Ben", "big ben")
             )
+
+            db.insertInputQuestionWithAnswers(
+                subject.id,
+                "What is on the picture?",
+                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flh3.googleusercontent.com%2Fs5sYOSRoSEkmgjxGIKAwkXYcXXJvK7ORywoKg38oMFaZcTbiikToUpJEQrJHIQA0R277s79mniYk1TgIRVpNMm8Qklo-hZni1qWBUsPykNT8fJ7smVdX71MDTwp2LkUxMN5a5D_q&f=1&nofb=1&ipt=effec8b87e551a9b528535b60ca4ca0f3931256e566c295a8f0df06fcbf8b63a",
+                listOf("phone", "smartphone", "mobile phone")
+            )
+
+            db.insertInputQuestionWithAnswers(
+                subject.id,
+                "What is on the picture?",
+                "https://images.cdn.autocar.co.uk/sites/autocar.co.uk/files/styles/gallery_slide/public/mini-5-door-cooper.jpg?itok=JAsk5cnT",
+                listOf("car")
+            )
+
+            db.insertInputQuestionWithAnswers(
+                subject.id,
+                "What is on the picture (answer with  words)?",
+                "https://ih0.redbubble.net/image.106479213.6775/flat,800x800,075,f.jpg",
+                listOf("sixteen")
+            )
+
+            db.insertInputQuestionWithAnswers(
+                subject.id,
+                "In one word describe the weather on the picture?",
+                "https://c.pxhere.com/photos/cc/44/clouds_cloudy_countryside_dark_dark_clouds_dramatic_farm_field-1526807.jpg!d",
+                listOf("cloudy")
+            )
+
+            db.insertInputQuestionWithAnswers(
+                subject.id,
+                "Which holiday is being decorated for in the picture?",
+                "https://www.bankrate.com/2022/12/01142725/christmas-decorating-data.jpg?auto=webp",
+                listOf("cloudy")
+            )
+
+
         }
     }
 }
