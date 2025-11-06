@@ -77,7 +77,6 @@ fun NavAndSideBarView(
                         .safeContentPadding()
                         .padding(vertical = 8.dp)
                 ) {
-                    // List subjects dynamically
                     subjects.forEach { subject ->
                         DrawerItem(iconText = "•", label = subject.name) {
                             selectedSubjectId = subject.id
@@ -85,8 +84,7 @@ fun NavAndSideBarView(
                         }
                     }
 
-                    // Add new subject (simple quick action)
-                    DrawerItem(iconText = "➕", label = "Add new subject") {
+                    DrawerItem(iconText = "➕", label = "Dodaj nov predmet") {
                         val newName = "Subject ${subjects.size + 1}"
                         db.insertSubject(newName)
                         subjects = db.getAllSubjects()
@@ -106,31 +104,24 @@ fun NavAndSideBarView(
             bottomBar = {
                 NavigationBar {
                     NavigationBarItem(
-                        selected = selected == ScreenEnum.Home,
-                        onClick = { onSelectedChange(ScreenEnum.Home) },
+                        selected = selected == ScreenEnum.GameSelect,
+                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
                         icon = { Text("🏠", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Home") }
+                        label = { Text("Domov") }
                     )
 
                     NavigationBarItem(
                         selected = selected == ScreenEnum.Creator,
                         onClick = { onSelectedChange(ScreenEnum.Creator) },
                         icon = { Text("✏️", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Creator") }
+                        label = { Text("Ustvari") }
                     )
 
                     NavigationBarItem(
                         selected = selected == ScreenEnum.Statistics,
                         onClick = { onSelectedChange(ScreenEnum.Statistics) },
                         icon = { Text("📊", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Stats") }
-                    )
-
-                    NavigationBarItem(
-                        selected = selected == ScreenEnum.GameSelect,
-                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
-                        icon = { Text(":)", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Select Game") }
+                        label = { Text("Statistika") }
                     )
                 }
             }
@@ -138,8 +129,7 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .safeContentPadding(),
+                    .padding(innerPadding),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

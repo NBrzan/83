@@ -49,7 +49,7 @@ fun StatsScreen(controller: StatsController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Your Progress",
+            text = "Tvoj napredek",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF3E3E3E),
@@ -62,9 +62,9 @@ fun StatsScreen(controller: StatsController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         // Count items
-        StatItem("✅ Correct", stats.correct, Color(0xFF4CAF50))
-        StatItem("❌ Incorrect", stats.incorrect, Color(0xFFF44336))
-        StatItem("⏳ Unanswered", stats.unanswered, Color(0xFF9E9E9E))
+        StatItem("✅ Pravilno", stats.correct, Color(0xFF4CAF50))
+        StatItem("❌ Nepravilno", stats.incorrect, Color(0xFFF44336))
+        StatItem("⏳ Neodgovorjeno", stats.unanswered, Color(0xFF9E9E9E))
     }
 }
 

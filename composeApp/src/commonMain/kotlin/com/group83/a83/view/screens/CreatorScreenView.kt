@@ -81,9 +81,9 @@ fun CreatorScreenView(
                 .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                CreateQuestionView("Multi", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png", onClick = { onOpenForm(ScreenEnum.MultipleForm) })
+                CreateQuestionView("Več izb.", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png", onClick = { onOpenForm(ScreenEnum.MultipleForm) })
                 CreateQuestionView("Flashcard", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4", onClick = { onOpenForm(ScreenEnum.FlashcardForm) })
-                CreateQuestionView("Input", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png", onClick = { onOpenForm(ScreenEnum.InputForm) })
+                CreateQuestionView("Vnosa", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png", onClick = { onOpenForm(ScreenEnum.InputForm) })
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -92,7 +92,7 @@ fun CreatorScreenView(
                 onClick = { onOpenForm(ScreenEnum.valueOf("PreviewAllQuestionsView")) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Preglej ustvarjena vprašanja")
+                Text("Preglej vprašanja")
             }
 
             Spacer(modifier = Modifier.height(12.dp))

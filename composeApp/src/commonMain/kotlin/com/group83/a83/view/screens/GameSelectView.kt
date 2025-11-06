@@ -51,7 +51,7 @@ fun GameSelectView(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Predmet: eng",
+                "Predmet: ${uiState.currentSelectedSubject}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -64,14 +64,14 @@ fun GameSelectView(
             ) {
                 Column(modifier = Modifier.weight(1f).clickable { onGameSelected(GameType.abcd) }) {
                     SimpleGameDisplay(
-                        "Multiple choices",
+                        "Več možnosti",
                         "https://cdn4.iconfinder.com/data/icons/top-search-7/128/_list_bullets_points_checklist_choose--512.png",
                         modifier = Modifier
                     )
                 }
                 Column(modifier = Modifier.weight(1f).clickable { onGameSelected(GameType.input) }) {
                     SimpleGameDisplay(
-                        "Input answer",
+                        "Vnesite odgovor",
                         "https://cdn1.iconfinder.com/data/icons/radix/15/input-512.png",
                         modifier = Modifier
                     )
@@ -79,10 +79,10 @@ fun GameSelectView(
             }
 
             Column(modifier = Modifier.clickable { onGameSelected(GameType.imageABCD) }) {
-                SimpleGameDisplay("Image multiple choices", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
+                SimpleGameDisplay("Več možnosti za sliko", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
             }
             Column(modifier = Modifier.clickable { onGameSelected(GameType.imageInput) }) {
-                SimpleGameDisplay("Image Input answer", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
+                SimpleGameDisplay("Odgovor na vnos slike", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
             }
 
             Column(modifier = Modifier.clickable { onGameSelected(GameType.flashcards) }) {
