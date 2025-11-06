@@ -25,7 +25,8 @@ import com.group83.a83.model.GameType
 @Composable
 fun GameSelectView(
     uiState: UiState = UiState(),
-    onGameSelected: (GameType) -> Unit = {}
+    onGameSelected: (GameType) -> Unit = {},
+    subject: String
 ) {
 
     Column(
@@ -51,7 +52,7 @@ fun GameSelectView(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Predmet: eng",
+                "Predmet: " + subject,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
@@ -64,14 +65,14 @@ fun GameSelectView(
             ) {
                 Column(modifier = Modifier.weight(1f).clickable { onGameSelected(GameType.abcd) }) {
                     SimpleGameDisplay(
-                        "Multiple choices",
+                        "Vprašanja z več izbirami",
                         "https://cdn4.iconfinder.com/data/icons/top-search-7/128/_list_bullets_points_checklist_choose--512.png",
                         modifier = Modifier
                     )
                 }
                 Column(modifier = Modifier.weight(1f).clickable { onGameSelected(GameType.input) }) {
                     SimpleGameDisplay(
-                        "Input answer",
+                        "Vprašanja z vnosom odgovora",
                         "https://cdn1.iconfinder.com/data/icons/radix/15/input-512.png",
                         modifier = Modifier
                     )
@@ -79,14 +80,14 @@ fun GameSelectView(
             }
 
             Column(modifier = Modifier.clickable { onGameSelected(GameType.imageABCD) }) {
-                SimpleGameDisplay("Image multiple choices", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
+                SimpleGameDisplay("Vprašanja s slikami in več izbirami", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
             }
             Column(modifier = Modifier.clickable { onGameSelected(GameType.imageInput) }) {
-                SimpleGameDisplay("Image Input answer", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
+                SimpleGameDisplay("IVprašanja s sliko in vnosom", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
             }
 
             Column(modifier = Modifier.clickable { onGameSelected(GameType.flashcards) }) {
-                SimpleGameDisplay("Flashcard Q/A", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4")
+                SimpleGameDisplay("Karte za učenje", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4")
             }
 
             Spacer(modifier = Modifier.height(70.dp))

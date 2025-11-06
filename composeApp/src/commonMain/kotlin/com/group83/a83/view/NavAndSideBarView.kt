@@ -219,7 +219,9 @@ fun NavAndSideBarView(
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
-                    })
+                    },
+                        subject = subjects.first { it.id == selectedSubjectId }.name)
+                    
 
                     ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))
                     ScreenEnum.MultipleForm -> {
