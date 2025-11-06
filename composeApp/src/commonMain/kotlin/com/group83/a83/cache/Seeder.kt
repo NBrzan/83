@@ -166,6 +166,46 @@ class DatabaseSeeder(private val db: FullDatabase) {
                 listOf(1)
             )
 
+            db.insertABCDImageQuestionWithAnswers(
+                subject.id,
+                "What body part is on the picture?",
+                "https://www.quia.com/files/quia/users/heidhuss/arm.jpeg",
+                listOf("arm", "leg", "big toe", "head"),
+                listOf(0)
+            )
+
+            db.insertABCDImageQuestionWithAnswers(
+                subject.id,
+                "What body part is on the picture?",
+                "https://dokilen.github.io/a_new_me/photos/029.jpg",
+                listOf("arm", "fingers", "head", "shoulders"),
+                listOf(2)
+            )
+
+            db.insertABCDImageQuestionWithAnswers(
+                subject.id,
+                "What body part is on the picture?",
+                "https://www.quia.com/files/quia/users/heidhuss/auge.jpeg",
+                listOf("leg", "fingers", "eyes", "shoulders"),
+                listOf(2)
+            )
+
+            db.insertABCDImageQuestionWithAnswers(
+                subject.id,
+                "What time does the clock show?",
+                "https://epslarissas.gr/wp-content/uploads/2023/02/2d838c70fcd0907ca5ca1b4fe18326b5.jpg",
+                listOf("Half past three", "Three o'clock", "Quarter to four", "Half past four"),
+                listOf(0)
+            )
+
+            db.insertABCDImageQuestionWithAnswers(
+                subject.id,
+                "What is on the picture?",
+                "https://laptopmedia.com/wp-content/uploads/2023/03/1-7-e1678204902490-680x404.jpg",
+                listOf("Phone", "Smartphone", "Flour", "laptop"),
+                listOf(3)
+            )
+
             // Input Questions
             db.insertInputQuestionWithAnswers(
                 subject.id,
