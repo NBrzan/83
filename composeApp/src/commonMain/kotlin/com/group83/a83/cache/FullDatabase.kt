@@ -21,7 +21,6 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
 
     }
 
-    // Keep existing API
     internal fun getAllCards(): List<FlashcardModel> {
         return dbQuery.selectAllCards(::mapFlashCard).executeAsList()
     }
@@ -34,7 +33,6 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         dbQuery.removeAllCards()
     }
 
-    // Delete a single flashcard by id
     internal fun deleteFlashcardById(cardId: Long) {
         dbQuery.deleteCardById(cardId)
     }
@@ -137,7 +135,6 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    // Delete normal ABCD question (answers then question)
     internal fun deleteAbcdQuestionById(questionId: Long) {
         dbQuery.transaction {
             dbQuery.deleteAbcdAnswersByQuestion(questionId, 0L)
@@ -195,7 +192,6 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    // Delete ABCD image question (answers then image question)
     internal fun deleteAbcdImageQuestionById(questionId: Long) {
         dbQuery.transaction {
             dbQuery.deleteAbcdAnswersByQuestion(questionId, 1L)
@@ -240,7 +236,6 @@ class FullDatabase(databaseDriverFactory: DatabaseDriverFactory) {
         }
     }
 
-    // Delete input question (answers then question)
     internal fun deleteInputQuestionById(questionId: Long) {
         inputQueries.transaction {
             inputQueries.deleteInputAnswersByQuestion(questionId)

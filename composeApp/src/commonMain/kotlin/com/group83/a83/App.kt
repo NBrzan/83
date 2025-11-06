@@ -23,7 +23,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App(driverFactory: DatabaseDriverFactory) {
     MaterialTheme {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        var selected by remember { mutableStateOf(ScreenEnum.Home) }
+        var selected by remember { mutableStateOf(ScreenEnum.GameSelect) }
         val scope = rememberCoroutineScope()
 
         val db = remember { FullDatabase(driverFactory) }

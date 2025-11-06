@@ -39,7 +39,6 @@ fun PreviewAllQuestionsView(
     subjectId: Long? = null,
     onBack: () -> Unit = {}
 ) {
-    // Build initial list from DB or provided list
     val initialQuestions: List<GameQuestion> = if (db != null) {
         val all = mutableListOf<GameQuestion>()
         if (subjectId != null) {
@@ -49,7 +48,6 @@ fun PreviewAllQuestionsView(
             all.addAll(db.getInputQuestionsForSubject(subjectId, 0))
             all.addAll(db.getInputQuestionsForSubject(subjectId, 1))
         } else {
-            // collect across all subjects
             db.getAllSubjects().forEach { subj ->
                 all.addAll(db.getCardsForSubject(subj.id))
                 all.addAll(db.getABCDQuestionsForSubject(subj.id))
@@ -63,7 +61,6 @@ fun PreviewAllQuestionsView(
         createdQuestions
     }
 
-    // Remember a mutable state list so deletes update the UI immediately
     val displayQuestions = remember { mutableStateListOf<GameQuestion>().apply { addAll(initialQuestions) } }
 
     Column(
@@ -94,7 +91,7 @@ fun PreviewAllQuestionsView(
             return@Column
         }
 
-        Text("Created: ${displayQuestions.size} questions", modifier = Modifier.padding(8.dp))
+        Text("Ustvaril: ${displayQuestions.size} vprašanj", modifier = Modifier.padding(8.dp))
 
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(displayQuestions) { q ->
@@ -104,7 +101,7 @@ fun PreviewAllQuestionsView(
                     Column(modifier = Modifier.padding(8.dp)) {
                         when (q) {
                             is ABCDModel -> {
-                                Text("MC: ${q.question}")
+                                Text("VI: ${q.question}")
                                 q.answers.forEachIndexed { idx, a ->
                                     val prefix = if (q.correctAnswers.contains(idx.toLong())) "*" else " "
                                     Text("$prefix ${a.answer}")
@@ -116,13 +113,13 @@ fun PreviewAllQuestionsView(
                                             db.deleteAbcdQuestionById(q.id.toLong())
                                             displayQuestions.remove(q)
                                         }) {
-                                            Text("Delete")
+                                            Text("Zbriši")
                                         }
                                     }
                                 }
                             }
                             is InputModel -> {
-                                Text("Input: ${q.question}")
+                                Text("Vnos: ${q.question}")
                                 q.answers.forEach { a -> Text("- ${a.answer}") }
                                 if (db != null) {
                                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -146,13 +143,13 @@ fun PreviewAllQuestionsView(
                                             db.deleteFlashcardById(q.id.toLong())
                                             displayQuestions.remove(q)
                                         }) {
-                                            Text("Delete")
+                                            Text("Zbriši")
                                         }
                                     }
                                 }
                             }
                             is ImageABCDModel -> {
-                                Text("Image MC: ${q.question}")
+                                Text("Foto VI: ${q.question}")
                                 q.answers.forEachIndexed { idx, a ->
                                     val prefix = if (q.correctAnswers.contains(idx.toLong())) "*" else " "
                                     Text("$prefix ${a.answer}")
@@ -164,13 +161,13 @@ fun PreviewAllQuestionsView(
                                             db.deleteAbcdImageQuestionById(q.id.toLong())
                                             displayQuestions.remove(q)
                                         }) {
-                                            Text("Delete")
+                                            Text("Zbriši")
                                         }
                                     }
                                 }
                             }
                             is ImageInputModel -> {
-                                Text("Image Input: ${q.question}")
+                                Text("Foto vnos: ${q.question}")
                                 q.answers.forEach { a -> Text("- ${a.answer}") }
                                 if (db != null) {
                                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -179,7 +176,7 @@ fun PreviewAllQuestionsView(
                                             db.deleteInputQuestionById(q.id.toLong())
                                             displayQuestions.remove(q)
                                         }) {
-                                            Text("Delete")
+                                            Text("Zbriši")
                                         }
                                     }
                                 }

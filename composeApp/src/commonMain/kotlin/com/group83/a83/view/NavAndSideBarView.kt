@@ -50,7 +50,6 @@ import com.group83.a83.view.component.MultipleChoiceForm
 import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.PreviewAllQuestionsView
-import kotlinx.coroutines.launch
 import com.group83.a83.view.screens.StatsScreen
 
 @Composable
@@ -77,7 +76,6 @@ fun NavAndSideBarView(
                         .safeContentPadding()
                         .padding(vertical = 8.dp)
                 ) {
-                    // List subjects dynamically
                     subjects.forEach { subject ->
                         DrawerItem(iconText = "•", label = subject.name) {
                             selectedSubjectId = subject.id
@@ -85,8 +83,7 @@ fun NavAndSideBarView(
                         }
                     }
 
-                    // Add new subject (simple quick action)
-                    DrawerItem(iconText = "➕", label = "Add new subject") {
+                    DrawerItem(iconText = "➕", label = "Dodaj nov predmet") {
                         val newName = "Subject ${subjects.size + 1}"
                         db.insertSubject(newName)
                         subjects = db.getAllSubjects()
@@ -106,31 +103,24 @@ fun NavAndSideBarView(
             bottomBar = {
                 NavigationBar {
                     NavigationBarItem(
-                        selected = selected == ScreenEnum.Home,
-                        onClick = { onSelectedChange(ScreenEnum.Home) },
+                        selected = selected == ScreenEnum.GameSelect,
+                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
                         icon = { Text("🏠", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Home") }
+                        label = { Text("Domov") }
                     )
 
                     NavigationBarItem(
                         selected = selected == ScreenEnum.Creator,
                         onClick = { onSelectedChange(ScreenEnum.Creator) },
                         icon = { Text("✏️", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Creator") }
+                        label = { Text("Ustvari") }
                     )
 
                     NavigationBarItem(
                         selected = selected == ScreenEnum.Statistics,
                         onClick = { onSelectedChange(ScreenEnum.Statistics) },
                         icon = { Text("📊", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Stats") }
-                    )
-
-                    NavigationBarItem(
-                        selected = selected == ScreenEnum.GameSelect,
-                        onClick = { onSelectedChange(ScreenEnum.GameSelect) },
-                        icon = { Text(":)", fontSize = 18.sp, textAlign = TextAlign.Center) },
-                        label = { Text("Select Game") }
+                        label = { Text("Statistika") }
                     )
                 }
             }
@@ -143,7 +133,6 @@ fun NavAndSideBarView(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Top row with menu button to open drawer
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                     IconButton(onClick = {
                         scope.launch { if (drawerState.isClosed) drawerState.open() else drawerState.close() }
@@ -219,8 +208,7 @@ fun NavAndSideBarView(
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
-                    },
-                        subject = subjects.first { it.id == selectedSubjectId }.name)
+                    })
                     
 
                     ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))

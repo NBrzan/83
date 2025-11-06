@@ -74,10 +74,8 @@ fun MultipleChoiceForm(
 
         if (includeImage) {
             Spacer(modifier = Modifier.height(8.dp))
-            // Allow URL input
             OutlinedTextField(value = imageSrc, onValueChange = { imageSrc = it }, label = { Text("Image URL (or leave blank to pick from gallery)") }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
-            // Image picker button - platform-specific actual implementation
             ImagePickerButton(onImagePicked = { uri -> imageSrc = uri })
 
             if (imageSrc.isNotBlank()) {
@@ -113,7 +111,7 @@ fun MultipleChoiceForm(
                 imageSrc = ""
             }
         }, enabled = question.isNotBlank() && (!includeImage || imageSrc.isNotBlank())) {
-            Text("Add Multiple Choice")
+            Text("Dodaj več izbirno vprašanje")
         }
     }
 
