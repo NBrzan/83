@@ -1,3 +1,3 @@
 package com.group83.a83.view
 
-enum class ScreenEnum { Home, Creator, Statistics, MultipleForm, InputForm, FlashcardForm, PreviewAllQuestionsView, GameSelect, Game  }
+enum class ScreenEnum { Home, Creator, Statistics, MultipleForm, InputForm, FlashcardForm, PreviewAllQuestionsView, GameSelect, Game, WebGame  }

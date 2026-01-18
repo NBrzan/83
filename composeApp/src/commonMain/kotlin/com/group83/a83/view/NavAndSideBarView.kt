@@ -51,6 +51,7 @@ import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.PreviewAllQuestionsView
 import com.group83.a83.view.screens.StatsScreen
+import com.group83.a83.view.screens.WebGameView
 
 @Composable
 fun NavAndSideBarView(
@@ -208,8 +209,8 @@ fun NavAndSideBarView(
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
-                    })
-                    
+                    }, onWikipediaSelected = { onSelectedChange(ScreenEnum.WebGame) })
+
 
                     ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))
                     ScreenEnum.MultipleForm -> {
@@ -229,6 +230,10 @@ fun NavAndSideBarView(
 
                     ScreenEnum.PreviewAllQuestionsView -> {
                         PreviewAllQuestionsView(db = db, subjectId = null, onBack = { onSelectedChange(ScreenEnum.Creator) })
+                    }
+
+                    ScreenEnum.WebGame -> {
+                        WebGameView(onBack = { onSelectedChange(ScreenEnum.GameSelect) })
                     }
                 }
             }

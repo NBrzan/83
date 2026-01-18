@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.android.driver)
             implementation(libs.koin.androidx.compose)
+            implementation("androidx.webkit:webkit:1.8.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

@@ -25,7 +25,8 @@ import com.group83.a83.model.GameType
 @Composable
 fun GameSelectView(
     uiState: UiState = UiState(),
-    onGameSelected: (GameType) -> Unit = {}
+    onGameSelected: (GameType) -> Unit = {},
+    onWikipediaSelected: () -> Unit = {}
 ) {
 
     Column(
@@ -77,18 +78,44 @@ fun GameSelectView(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Column(modifier = Modifier.clickable { onGameSelected(GameType.imageABCD) }) {
-                SimpleGameDisplay("Več možnosti za sliko", "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png")
-            }
-            Column(modifier = Modifier.clickable { onGameSelected(GameType.imageInput) }) {
-                SimpleGameDisplay("Odgovor na vnos slike", "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png")
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Column(modifier = Modifier.clickable { onGameSelected(GameType.imageABCD) }) {
+                    SimpleGameDisplay(
+                        "Več možnosti za sliko",
+                        "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-image-512.png"
+                    )
+                }
+                Column(modifier = Modifier.clickable { onGameSelected(GameType.imageInput) }) {
+                    SimpleGameDisplay(
+                        "Odgovor na vnos slike",
+                        "https://cdn4.iconfinder.com/data/icons/remixicon-media/24/image-edit-line-512.png"
+                    )
+                }
             }
 
-            Column(modifier = Modifier.clickable { onGameSelected(GameType.flashcards) }) {
-                SimpleGameDisplay("Flashcard Q/A", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4")
-            }
+            Spacer(modifier = Modifier.height(20.dp))
 
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Column(modifier = Modifier.clickable { onGameSelected(GameType.flashcards) }) {
+                    SimpleGameDisplay("Flashcard Q/A", "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F008%2F854%2F548%2Foriginal%2Fpoker-card-casino-3d-design-elements-free-png.png&f=1&nofb=1&ipt=dc7153b83d6a29256e18f2371cb24da4ca04dff1f772dfeb2925197d717819d4")
+                }
+                Column(modifier = Modifier.clickable { onWikipediaSelected() }) {
+                    SimpleGameDisplay(
+                        "Igra",
+                        "https://imgs.search.brave.com/QzTLbWnVF-JPlkBmf4yp-nrlR1U4K-exj6kxSkMG7Ng/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTQv/MDY2LzUxOC9zbWFs/bC9jb250cm9sbGVy/LWdhbWUtaWNvbi1p/bi1ibGFjay1jaXJj/bGUtZnJlZS1wbmcu/cG5n"
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(70.dp))
         }
     }
