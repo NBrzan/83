@@ -1,3 +1,19 @@
+Oški - Anki for kids in middle school
+
+Nav bar options:
+- home (learning mode)
+- creator (edit/add flashcards) mode
+- stats
+
+Side bar (Subjects):
+- Angleščina
+- Geografija
+- Make new
+- SECTION BREAK
+- Settings
+- About us
+
+
 This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM).
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.

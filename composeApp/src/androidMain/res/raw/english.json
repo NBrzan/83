@@ -1,0 +1,274 @@
+{
+  "flashCard": [
+    {
+      "id": 0,
+      "front": "Abundant",
+      "back": "Existing or available in large quantities"
+    },
+    {
+      "id": 1,
+      "front": "Benevolent",
+      "back": "Well meaning and kindly"
+    },
+    {
+      "id": 2,
+      "front": "Candid",
+      "back": "Truthful and straightforward"
+    },
+    {
+      "id": 3,
+      "front": "Diligent",
+      "back": "Having or showing care in work or duties"
+    },
+    {
+      "id": 4,
+      "front": "Eloquent",
+      "back": "Fluent or persuasive in speaking or writing"
+    },
+    {
+      "id": 5,
+      "front": "Frugal",
+      "back": "Sparing or economical with resources"
+    },
+    {
+      "id": 6,
+      "front": "Gregarious",
+      "back": "Fond of company; sociable"
+    },
+    {
+      "id": 7,
+      "front": "Hinder",
+      "back": "Create difficulties resulting in delay"
+    },
+    {
+      "id": 8,
+      "front": "Impartial",
+      "back": "Treating all rivals equally; fair"
+    },
+    {
+      "id": 9,
+      "front": "Jubilant",
+      "back": "Feeling or expressing great happiness"
+    }
+  ],
+  "abcd": [
+    {
+      "question": "Which of these are occupations?",
+      "id": 0,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Doctor"
+        },
+        {
+          "id": 1,
+          "answer": "Running"
+        },
+        {
+          "id": 2,
+          "answer": "Teacher"
+        },
+        {
+          "id": 3,
+          "answer": "Quickly"
+        }
+      ],
+      "correctAnswers": [
+        0,
+        2
+      ]
+    },
+    {
+      "question": "Which of the following is a synonym for 'happy'?",
+      "id": 1,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Sorrowful"
+        },
+        {
+          "id": 1,
+          "answer": "Joyful"
+        },
+        {
+          "id": 2,
+          "answer": "Angry"
+        },
+        {
+          "id": 3,
+          "answer": "Tired"
+        }
+      ],
+      "correctAnswers": [
+        1
+      ]
+    },
+    {
+      "question": "What is the plural of 'mouse'?",
+      "id": 2,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Mouses"
+        },
+        {
+          "id": 1,
+          "answer": "Mice"
+        },
+        {
+          "id": 2,
+          "answer": "Mooses"
+        },
+        {
+          "id": 3,
+          "answer": "Meece"
+        }
+      ],
+      "correctAnswers": [
+        1
+      ]
+    }
+  ],
+  "input": [
+    {
+      "question": "What is the past tense of the verb 'go'?",
+      "id": 0,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "went"
+        },
+        {
+          "id": 1,
+          "answer": "Went"
+        }
+      ]
+    },
+    {
+      "question": "Which word is a noun: 'run', 'quickly', or 'book'?",
+      "id": 1,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "book"
+        },
+        {
+          "id": 1,
+          "answer": "Book"
+        }
+      ]
+    },
+    {
+      "question": "Type the missing word: 'I have ___ apple.'",
+      "id": 2,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "an"
+        },
+        {
+          "id": 1,
+          "answer": "An"
+        }
+      ]
+    }
+  ],
+  "abcdImage": [
+    {
+      "imageSrc": "https://www.bbc.co.uk/food/collections/brilliant_breads",
+      "question": "What is on the picture?",
+      "id": 0,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Bread"
+        },
+        {
+          "id": 1,
+          "answer": "Microwave"
+        },
+        {
+          "id": 2,
+          "answer": "Plumber"
+        },
+        {
+          "id": 3,
+          "answer": "PC"
+        }
+      ],
+      "correctAnswers": [
+        0
+      ]
+    },
+    {
+      "imageSrc": "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "question": "What animal is in the picture?",
+      "id": 1,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Dog"
+        },
+        {
+          "id": 1,
+          "answer": "Cat"
+        },
+        {
+          "id": 2,
+          "answer": "Bird"
+        },
+        {
+          "id": 3,
+          "answer": "Fish"
+        }
+      ],
+      "correctAnswers": [
+        1
+      ]
+    }
+  ],
+  "inputImage": [
+    {
+      "imageSrc": "https://www.publicdomainpictures.net/view-image.php?image=165194&picture=i-soldi",
+      "question": "What is on the picture?",
+      "id": 0,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "money"
+        },
+        {
+          "id": 1,
+          "answer": "cash"
+        },
+        {
+          "id": 2,
+          "answer": "moolah"
+        },
+        {
+          "id": 3,
+          "answer": "Money"
+        },
+        {
+          "id": 4,
+          "answer": "Cash"
+        }
+      ]
+    },
+    {
+      "imageSrc": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Big_Ben_in_London_2015.jpg/800px-Big_Ben_in_London_2015.jpg",
+      "question": "What is the name of this famous landmark?",
+      "id": 1,
+      "answers": [
+        {
+          "id": 0,
+          "answer": "Big Ben"
+        },
+        {
+          "id": 1,
+          "answer": "big ben"
+        }
+      ]
+    }
+  ]
+}

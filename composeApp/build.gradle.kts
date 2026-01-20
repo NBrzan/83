@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -29,11 +30,6 @@ kotlin {
     
     jvm()
     
-    js {
-        browser()
-        binaries.executable()
-    }
-    
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -44,6 +40,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.android.driver)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -54,6 +52,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation("com.github.skydoves:landscapist-coil3:2.6.0")
+            implementation(libs.koin.core)
+            implementation(libs.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -61,6 +62,9 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+        iosMain.dependencies {
+            implementation(libs.native.driver)
         }
     }
 }
@@ -107,3 +111,12 @@ compose.desktop {
         }
     }
 }
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.group83.a83.cache")
+        }
+    }
+}
+

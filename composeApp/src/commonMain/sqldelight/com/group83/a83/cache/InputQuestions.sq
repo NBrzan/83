@@ -1,0 +1,55 @@
+CREATE TABLE InputQuestion (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  question_type INTEGER NOT NULL DEFAULT 0, -- 0 = input, 1 = imageInput
+  question TEXT NOT NULL,
+  image_src TEXT,
+  subject_id INTEGER NOT NULL
+);
+
+insertInputQuestion:
+INSERT INTO InputQuestion(subject_id, question, image_src, question_type)
+VALUES (?, ?, ?, ?);
+
+selectAllInputQuestions:
+SELECT id, question_type, question, image_src, subject_id FROM InputQuestion
+ORDER BY id DESC;
+
+selectLastInputQuestions:
+SELECT id, question_type, question, image_src, subject_id FROM InputQuestion
+ORDER BY id DESC LIMIT 1;
+
+selectInputByType:
+SELECT id, question_type, question, image_src, subject_id FROM InputQuestion
+WHERE subject_id = ? AND question_type = ?
+ORDER BY id DESC;
+
+selectLatestInputQuestionId:
+SELECT id FROM InputQuestion ORDER BY id DESC LIMIT 1;
+
+CREATE TABLE InputAnswer (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  input_question_id INTEGER NOT NULL,
+  answer TEXT NOT NULL,
+  FOREIGN KEY (input_question_id) REFERENCES InputQuestion(id)
+);
+
+insertInputAnswer:
+INSERT INTO InputAnswer(input_question_id, answer)
+VALUES (?, ?);
+
+selectAnswersForInputQuestion:
+SELECT id, answer FROM InputAnswer
+WHERE input_question_id = ?;
+
+-- delete all answers for an input question
+deleteInputAnswersByQuestion:
+DELETE FROM InputAnswer WHERE input_question_id = ?;
+
+-- delete an input question by id
+deleteInputQuestionById:
+DELETE FROM InputQuestion WHERE id = ?;
+
+selectAllInputQuestionsByType:
+SELECT id, question_type, question, image_src, subject_id FROM InputQuestion
+WHERE question_type = ? AND subject_id = ?
+ORDER BY id DESC;

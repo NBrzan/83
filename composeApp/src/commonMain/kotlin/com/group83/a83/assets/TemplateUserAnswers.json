@@ -1,0 +1,32 @@
+{
+  "flashCard": [
+    {
+      "id": 0,
+      "correct": false
+    }
+  ],
+  "abcd": [
+    {
+      "id": 0,
+      "userAnswers": []
+    }
+  ],
+  "input": [
+    {
+      "id": 0,
+      "userAnswers": []
+    }
+  ],
+  "abcdImage": [
+    {
+      "id": 0,
+      "userAnswers": []
+    }
+  ],
+  "inputImage": [
+    {
+      "id": null,
+      "userAnswers": []
+    }
+  ]
+}
