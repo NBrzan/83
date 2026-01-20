@@ -4,11 +4,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,9 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group83.a83.model.GameType
 import com.group83.a83.view.component.SimpleGameDisplay
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import com.group83.a83.model.GameType
 
 @Preview(name = "App preview", showBackground = true)
 @Composable
@@ -34,6 +36,7 @@ fun GameSelectView(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(1.dp)
     ) {
         if (uiState.isLoading) {
@@ -112,7 +115,7 @@ fun GameSelectView(
                 Column(modifier = Modifier.clickable { onWikipediaSelected() }) {
                     SimpleGameDisplay(
                         "Igra",
-                        "https://imgs.search.brave.com/QzTLbWnVF-JPlkBmf4yp-nrlR1U4K-exj6kxSkMG7Ng/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTQv/MDY2LzUxOC9zbWFs/bC9jb250cm9sbGVy/LWdhbWUtaWNvbi1p/bi1ibGFjay1jaXJj/bGUtZnJlZS1wbmcu/cG5n"
+                        "https://cdn-icons-png.flaticon.com/512/10736/10736914.png"
                     )
                 }
             }

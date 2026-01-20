@@ -3,16 +3,16 @@ package com.group83.a83.view.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,14 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group83.a83.model.FlashcardModel
 import com.group83.a83.model.GameQuestion
-import com.group83.a83.model.InputModel
-import com.group83.a83.model.ABCDModel
-import com.group83.a83.model.ImageABCDModel
-import com.group83.a83.model.ImageInputModel
-import com.group83.a83.view.component.CreateQuestionView
 import com.group83.a83.view.ScreenEnum
+import com.group83.a83.view.component.CreateQuestionView
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview(name = "App preview", showBackground = true)

@@ -32,7 +32,7 @@ fun WebGameView(onBack: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color(0xfffceca7))
         ) {
             WebViewContent(gameUrl, modifier = Modifier.fillMaxSize())
         }

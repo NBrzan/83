@@ -1,5 +1,6 @@
 package com.group83.a83.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,7 +72,9 @@ fun NavAndSideBarView(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = Color(0xFFB7CAF6)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,7 +106,9 @@ fun NavAndSideBarView(
     ) {
         Scaffold(
             bottomBar = {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = Color(0xFFB7CAF6),
+                ) {
                     NavigationBarItem(
                         selected = selected == ScreenEnum.GameSelect,
                         onClick = { onSelectedChange(ScreenEnum.GameSelect) },
@@ -129,6 +135,7 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color(0xFFFFF7D4))
                     .padding(innerPadding)
                     .safeContentPadding(),
                 verticalArrangement = Arrangement.Top,
