@@ -51,7 +51,7 @@ import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.PreviewAllQuestionsView
 import com.group83.a83.view.screens.StatsScreen
-import com.group83.a83.view.screens.WebGameView
+import com.group83.a83.view.screens.ShowWebGameWithActivity
 
 @Composable
 fun NavAndSideBarView(
@@ -233,7 +233,7 @@ fun NavAndSideBarView(
                     }
 
                     ScreenEnum.WebGame -> {
-                        WebGameView(onBack = { onSelectedChange(ScreenEnum.GameSelect) })
+                        ShowWebGameWithActivity(onBack = { onSelectedChange(ScreenEnum.GameSelect) })
                     }
                 }
             }

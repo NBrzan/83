@@ -27,20 +27,6 @@ fun WebGameView(onBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // Top bar with back button
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = { onBack() },
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                Text("Back")
-            }
-        }
 
         // WebView
         Box(
