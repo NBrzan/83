@@ -1,5 +1,6 @@
 package com.group83.a83.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import com.group83.a83.view.screens.GameSelectView
 import com.group83.a83.view.screens.UiState
 import com.group83.a83.view.screens.PreviewAllQuestionsView
 import com.group83.a83.view.screens.StatsScreen
+import com.group83.a83.view.screens.ShowWebGameWithActivity
 
 @Composable
 fun NavAndSideBarView(
@@ -69,7 +72,9 @@ fun NavAndSideBarView(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = Color(0xFFB7CAF6)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,7 +106,9 @@ fun NavAndSideBarView(
     ) {
         Scaffold(
             bottomBar = {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = Color(0xFFB7CAF6),
+                ) {
                     NavigationBarItem(
                         selected = selected == ScreenEnum.GameSelect,
                         onClick = { onSelectedChange(ScreenEnum.GameSelect) },
@@ -128,6 +135,7 @@ fun NavAndSideBarView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color(0xFFFFF7D4))
                     .padding(innerPadding)
                     .safeContentPadding(),
                 verticalArrangement = Arrangement.Top,
@@ -208,8 +216,8 @@ fun NavAndSideBarView(
                             }
                             onSelectedChange(ScreenEnum.Game)
                         }
-                    })
-                    
+                    }, onWikipediaSelected = { onSelectedChange(ScreenEnum.WebGame) })
+
 
                     ScreenEnum.Game -> GameContainerView(GameContainerController(questions = selectedQuestions))
                     ScreenEnum.MultipleForm -> {
@@ -229,6 +237,10 @@ fun NavAndSideBarView(
 
                     ScreenEnum.PreviewAllQuestionsView -> {
                         PreviewAllQuestionsView(db = db, subjectId = null, onBack = { onSelectedChange(ScreenEnum.Creator) })
+                    }
+
+                    ScreenEnum.WebGame -> {
+                        ShowWebGameWithActivity(onBack = { onSelectedChange(ScreenEnum.GameSelect) })
                     }
                 }
             }
